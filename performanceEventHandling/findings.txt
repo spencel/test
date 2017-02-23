@@ -1,0 +1,1 @@
+each onclick element attribute appears to be its own event listener which means if for example there are 100,000 elements with an onclick attribute then there will be 100,000 onclick event listeners which introduces a noticeable performance drop.
