@@ -758,7 +758,6 @@ function Gbk( args ) {
 				line = line.substr( tag.length );
 
 				thisGbk.reference[ referenceNumber ].authors = {};
-
 				var char;
 				var authorNumber = 1;
 				var lastName = "";
@@ -766,8 +765,109 @@ function Gbk( args ) {
 				var middleName = "";
 				var middleNames = [];
 
-				for ( iChar = 0; iChar < line.length; iChar++) {
+				for ( iChar = 0; iChar < line.length; ) {
 
+					char = line.charAt( iChar );
+
+					// Parse first name
+					firstName = ""; 
+					for ( ; iChar < line.length; ) {					
+
+						if ( char == ",") {
+
+							iChar++;
+							char = line.charAt( iChar );
+							break;
+
+						} else if ( char == "." ) {
+
+							iChar++;
+							char = line.charAt( iChar );
+
+							if ( char == "," ) {
+
+								iChar++;
+								char = line.charAt( iChar );
+								break;
+
+							} else {
+
+								console.log( "WARNING: Authors may possibly be incorrectly formatted.")
+								break;
+
+							}
+
+						} else if ( char == " " ) {
+
+							break;
+
+						} else {
+
+							firstName += char;
+							iChar++;
+							char = line.charAt( iChar );
+
+						}
+
+					}
+
+					thisGbk.reference[ referenceNumber ].authors[ authorNumber ] = {};
+					thisGbk.reference[ referenceNumber ].authors[ authorNumber ].firstName = firstName;
+
+					if ( char == " " ) {
+
+						iChar++;
+						char = line.charAt( iChar );
+						authorNumber++;
+						continue;
+
+					}
+
+					// Parse last name
+					lastName = "";
+					for ( ; iChar < line.length; ) {					
+
+						if ( char == ",") {
+
+							iChar++;
+							char = line.charAt( iChar );
+							break;
+
+						} else if ( char == "." ) {
+
+							iChar++;
+							char = line.charAt( iChar );
+							break;
+
+
+						} else if ( char == " " ) {
+
+							break;
+
+						} else {
+
+							lastName += char;
+							iChar++;
+							char = line.charAt( iChar );
+
+						}
+
+					}
+
+					thisGbk.reference[ referenceNumber ].authors[ authorNumber ].lastName = lastName;
+
+					if ( char == " " ) {
+
+						iChar++;
+						char = line.charAt( iChar );
+						authorNumber++;
+						continue;
+
+					}
+
+					// Parse middle names
+
+					authorNumber++;
 
 				}
 
