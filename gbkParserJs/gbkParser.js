@@ -11,6 +11,30 @@ Gbk.quantity = 0;
 // Constructor
 function Gbk( args ) {
 
+	this.locus = {
+		name: undefined,
+		sequenceLength: undefined,
+		sequenceLengthUnits: undefined,
+		moleculeType: undefined,
+		genBankDivision: undefined,
+		modificationDate: undefined
+	}
+	this.definition = undefined;
+	this.accession = undefined;
+	this.version = undefined;
+	this.gi = undefined;
+	this.source = {
+		source: undefined,
+		organism: {
+			genus: undefined,
+			species: undefined,
+			subspecies: undefined,
+			lineage: undefined
+		}
+	};
+	this.reference = {};
+	this.features = undefined;
+
 	/*
 		args[ rawGbkText ]
 		add args for other cases later
@@ -54,6 +78,8 @@ function Gbk( args ) {
 
 				case "SOURCE      ": parseSource(); break;
 
+				case "REFERENCE   ": parseReference(); break;
+
 				default:
 
 					console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
@@ -85,10 +111,6 @@ function Gbk( args ) {
 			parseModificationDate();
 
 			function parseLocusName() {
-
-				line = line.trimLeft();
-
-				thisGbk.locus.name = null;
 
 				var char;
 				var name = "";
@@ -127,8 +149,6 @@ function Gbk( args ) {
 
 				line = line.trimLeft();
 
-				thisGbk.locus.sequenceLength = null;
-
 				var char;
 				var sequenceLength = "";
 
@@ -166,7 +186,7 @@ function Gbk( args ) {
 
 					line = line.trimLeft();
 
-					thisGbk.locus.sequenceLengthUnits = null;
+					thisGbk.locus.sequenceLengthUnits = undefined;
 
 					var char;
 					var sequenceLengthUnits = "";
@@ -322,7 +342,7 @@ function Gbk( args ) {
 
 			line = line.substr( tag.length );
 
-			thisGbk.definition = null;
+			thisGbk.definition = undefined;
 
 			var definition = line;
 
@@ -336,7 +356,7 @@ function Gbk( args ) {
 
 			line = line.substr( tag.length );
 
-			thisGbk.accession = null;
+			thisGbk.accession = undefined;
 
 			var accession = line;
 
@@ -395,7 +415,7 @@ function Gbk( args ) {
 
 				line = line.trimLeft();
 
-				thisGbk.gi = null;
+				thisGbk.gi = undefined;
 
 				// Check if it's there or in the right format
 				if ( line.substr( 0, 3 ) == "GI:" ) {
@@ -450,7 +470,7 @@ function Gbk( args ) {
 
 			line = line.substr( tag.length );
 
-			thisGbk.keyWords = null;
+			thisGbk.keyWords = undefined;
 
 			if ( line == "." ) {
 
@@ -489,6 +509,281 @@ function Gbk( args ) {
 
 			line = line.substr( keyWords.length );
 
+		}
+
+		function parseSource() {
+
+			getAllLines( "            " );
+
+			line = line.substr( tag.length );
+
+			thisGbk.source = {};
+
+			thisGbk.source.source = undefined;
+
+			var source = line;
+
+			thisGbk.source.source = source;
+
+			// Parse one line at a time
+			for ( ; iLine < rawGbkText.length; ) {
+
+				line = rawGbkText[ iLine ];
+
+				if ( line.substr( 0,2 ) != "  " ) {
+
+					return;
+
+				}
+
+				tag = line.substr( 0, 12 );
+
+				switch ( tag ) {
+
+					case "  ORGANISM  ": parseOrganism(); break;
+
+					default:
+
+						console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
+
+						iLine++;
+
+					break;
+
+				}
+
+			}
+			
+			function parseOrganism() {
+
+				getAllLines( "            " );
+
+				line = line.substr( tag.length );
+
+				thisGbk.source.organism = {};
+
+				parseSpecies();
+
+				function parseSpecies() {
+
+					var arLine = line.split( "; " );
+					var arLine2 = arLine[ 0 ].split( " " );
+
+					if ( arLine2.length == 2 ) {
+
+						thisGbk.source.organism.species = arLine2[ 0 ];
+
+					} else if ( arLine2.length == 3 ) {
+
+						thisGbk.source.organism.genus = arLine2[ 0 ];
+						thisGbk.source.organism.species = arLine2[ 1 ];
+
+					} else if ( arLine2.length == 4 ) {
+
+						thisGbk.source.organism.genus = arLine2[ 0 ];
+						thisGbk.source.organism.species = arLine2[ 1 ];
+						thisGbk.source.organism.subspecies = arLine2[ 3 ];
+
+					}
+
+					arLine[ 0 ] = arLine2.pop();
+					var index = arLine.length - 1;
+
+					if ( arLine[ index ].endsWith( "." ) ) {
+
+						arLine[ index ] = arLine[ index ].substr( 0, arLine[ index ].length - 1)
+
+					}
+
+
+					arLine[ arLine.length - 1 ] = arLine[ arLine.length - 1 ]
+
+					thisGbk.source.organism.lineage = arLine;
+
+				}
+
+			}
+
+		}
+
+		function parseReference() {
+
+			getAllLines( "            " );
+
+			line = line.substr( tag.length );
+
+			var referenceNumber = parseReferenceNumber();
+
+			parseBases( referenceNumber );
+			
+			// Parse one line at a time
+			for ( ; iLine < rawGbkText.length; ) {
+
+				line = rawGbkText[ iLine ];
+
+				if ( line.substr( 0,2 ) != "  " ) {
+
+					return;
+
+				}
+
+				tag = line.substr( 0, 12 );
+
+				switch ( tag ) {
+
+					case "  AUTHORS   ": parseAuthors( referenceNumber ); break;
+
+					//case "  TITLE     ": parseTitle( referenceNumber ); break;
+
+					//case "  JOURNAL   ": parseJournal( referenceNumber ); break;
+
+					//case "  PUBMED    ": parsePubmed( referenceNumber ); break;
+
+					default:
+
+						console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
+
+						iLine++;
+
+					break;
+
+				}
+
+			}
+
+			function parseReferenceNumber() {
+
+				var char;
+				var referenceNumber = "";
+
+				for ( iChar = 0; iChar < line.length; iChar++ ) {
+
+					char = line.charAt( iChar )
+
+					if ( char != " " ) {
+
+						referenceNumber = referenceNumber + char;
+
+					} else {
+
+						break;
+
+					}
+
+				}
+
+				if ( referenceNumber.length > 0 ) {
+
+					thisGbk.reference[ referenceNumber ]  = {};
+
+				} else {
+
+					console.log( "WARNING: No Reference Number detected." );
+
+				}
+
+				line = line.substr( referenceNumber.length );
+
+				return referenceNumber;
+
+			}
+
+			function parseBases( referenceNumber ) {
+
+				line = line.trimLeft();
+
+				var char;
+				var fromBase = "";
+
+				for ( iChar = 0; iChar < line.length; iChar++ ) {
+
+					char = line.charAt( iChar )
+
+					if ( "0123456789".includes( char ) ) {
+
+						fromBase = fromBase + char;
+
+					} else if ( fromBase.length > 0 ) {
+
+						break;
+
+					}
+
+				}
+
+				if ( fromBase.length > 0 ) {
+
+					thisGbk.reference[ referenceNumber ].fromBase  = fromBase;
+
+				} else {
+
+					console.log( "WARNING: No Base Reference detected." );
+
+				}
+
+				var toBase = "";
+
+				for ( ; iChar < line.length; iChar++ ) {
+
+					char = line.charAt( iChar )
+
+					if ( "0123456789".includes( char ) ) {
+
+						toBase = toBase + char;
+
+					} else if ( toBase.length > 0 ) {
+
+						break;
+
+					}
+
+				}
+
+				if ( toBase.length > 0 ) {
+
+					thisGbk.reference[ referenceNumber ].toBase  = toBase;
+
+				} else {
+
+					console.log( "WARNING: No Base Reference detected." );
+
+				}
+
+			}
+
+			function parseAuthors( referenceNumber ) {
+
+				getAllLines( "            " );
+
+				line = line.substr( tag.length );
+
+				thisGbk.reference[ referenceNumber ].authors = {};
+
+				var char;
+				var authorNumber = 1;
+				var lastName = "";
+				var firstName = "";
+				var middleName = "";
+				var middleNames = [];
+
+				for ( iChar = 0; iChar < line.length; iChar++) {
+
+
+				}
+
+			}
+
+			function parseTitle( referenceNumber ) {
+
+			}
+
+			function parseJournal( referenceNumber ) {
+
+			}
+
+			function parsePubmed( referenceNumber ) {
+
+			}
 
 		}
 

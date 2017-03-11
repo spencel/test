@@ -12,5 +12,11 @@ function main() {
 	console.log( x.accession );
 	console.log( x.version );
 	console.log( x.gi );
+	console.log( x.source.source );
+	console.log( x.source.organism.genus );
+	console.log( x.source.organism.species );
+	console.log( x.source.organism.subspecies );
+	console.log( x.source.organism.lineage );
+	console.log( x.reference );
 
 }
