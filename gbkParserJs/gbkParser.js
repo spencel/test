@@ -773,7 +773,7 @@ function Gbk( args ) {
 					firstName = ""; 
 					for ( ; iChar < line.length; ) {					
 
-						if ( char == ",") {
+						if ( char == "," ) {
 
 							iChar++;
 							char = line.charAt( iChar );
@@ -811,8 +811,20 @@ function Gbk( args ) {
 
 					}
 
-					thisGbk.reference[ referenceNumber ].authors[ authorNumber ] = {};
-					thisGbk.reference[ referenceNumber ].authors[ authorNumber ].firstName = firstName;
+					if ( firstName == "and" ) {
+
+						iChar++;
+						char = line.charAt( iChar );
+						continue;
+
+					}
+
+					if ( firstName.length > 0 ) {
+
+						thisGbk.reference[ referenceNumber ].authors[ authorNumber ] = {};
+						thisGbk.reference[ referenceNumber ].authors[ authorNumber ].firstName = firstName;
+
+					}
 
 					if ( char == " " ) {
 
@@ -858,6 +870,8 @@ function Gbk( args ) {
 
 					if ( char == " " ) {
 
+						thisGbk.reference[ referenceNumber ].authors[ authorNumber ].middleNames = [];
+
 						iChar++;
 						char = line.charAt( iChar );
 						authorNumber++;
@@ -866,8 +880,44 @@ function Gbk( args ) {
 					}
 
 					// Parse middle names
+					middleName = "";
+					middleNames = [];
+					for ( ; iChar < line.length; ) {
 
-					authorNumber++;
+						if ( char == "," ) {
+
+							iChar++;
+							char = line.charAt( iChar );
+							break;
+
+						} else if ( char == "." ) {
+
+							console.log( "middleName: " + middleName );
+
+							middleNames.push( middleName );
+							middleName = "";
+
+							iChar++;
+							char = line.charAt( iChar );
+
+
+						} else if ( char == " " ) {
+
+							iChar++;
+							char = line.charAt( iChar );
+							break;
+
+						} else {
+
+							middleName += char;
+							iChar++;
+							char = line.charAt( iChar );
+
+						}
+
+					}
+
+					thisGbk.reference[ referenceNumber ].authors[ authorNumber ].middleNames = middleNames;					
 
 				}
 
