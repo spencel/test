@@ -33,7 +33,7 @@ function Gbk( args ) {
 		}
 	};
 	this.reference = {};
-	this.features = undefined;
+	this.features = {};
 
 	/*
 		args[ rawGbkText ]
@@ -79,6 +79,8 @@ function Gbk( args ) {
 				case "SOURCE      ": parseSource(); break;
 
 				case "REFERENCE   ": parseReference(); break;
+
+				case "FEATURES    ": parseFeatures(); break;
 
 				default:
 
@@ -633,11 +635,11 @@ function Gbk( args ) {
 
 					case "  AUTHORS   ": parseAuthors( referenceNumber ); break;
 
-					//case "  TITLE     ": parseTitle( referenceNumber ); break;
+					case "  TITLE     ": parseTitle( referenceNumber ); break;
 
-					//case "  JOURNAL   ": parseJournal( referenceNumber ); break;
+					case "  JOURNAL   ": parseJournal( referenceNumber ); break;
 
-					//case "  PUBMED    ": parsePubmed( referenceNumber ); break;
+					case "  PUBMED    ": parsePubmed( referenceNumber ); break;
 
 					default:
 
@@ -769,8 +771,8 @@ function Gbk( args ) {
 
 					char = line.charAt( iChar );
 
-					// Parse first name
-					firstName = ""; 
+					// Parse last name
+					lastName = ""; 
 					for ( ; iChar < line.length; ) {					
 
 						if ( char == "," ) {
@@ -803,7 +805,7 @@ function Gbk( args ) {
 
 						} else {
 
-							firstName += char;
+							lastName += char;
 							iChar++;
 							char = line.charAt( iChar );
 
@@ -811,7 +813,7 @@ function Gbk( args ) {
 
 					}
 
-					if ( firstName == "and" ) {
+					if ( lastName == "and" ) {
 
 						iChar++;
 						char = line.charAt( iChar );
@@ -819,10 +821,10 @@ function Gbk( args ) {
 
 					}
 
-					if ( firstName.length > 0 ) {
+					if ( lastName.length > 0 ) {
 
 						thisGbk.reference[ referenceNumber ].authors[ authorNumber ] = {};
-						thisGbk.reference[ referenceNumber ].authors[ authorNumber ].firstName = firstName;
+						thisGbk.reference[ referenceNumber ].authors[ authorNumber ].lastName = lastName;
 
 					}
 
@@ -835,8 +837,8 @@ function Gbk( args ) {
 
 					}
 
-					// Parse last name
-					lastName = "";
+					// Parse first name
+					firstName = "";
 					for ( ; iChar < line.length; ) {					
 
 						if ( char == ",") {
@@ -858,7 +860,7 @@ function Gbk( args ) {
 
 						} else {
 
-							lastName += char;
+							firstName += char;
 							iChar++;
 							char = line.charAt( iChar );
 
@@ -866,7 +868,7 @@ function Gbk( args ) {
 
 					}
 
-					thisGbk.reference[ referenceNumber ].authors[ authorNumber ].lastName = lastName;
+					thisGbk.reference[ referenceNumber ].authors[ authorNumber ].firstName = firstName;
 
 					if ( char == " " ) {
 
@@ -891,8 +893,6 @@ function Gbk( args ) {
 							break;
 
 						} else if ( char == "." ) {
-
-							console.log( "middleName: " + middleName );
 
 							middleNames.push( middleName );
 							middleName = "";
@@ -925,26 +925,115 @@ function Gbk( args ) {
 
 			function parseTitle( referenceNumber ) {
 
+				getAllLines( "            " );
+
+				line = line.substr( tag.length );
+
+				thisGbk.reference[ referenceNumber ].title = line;
+
 			}
 
 			function parseJournal( referenceNumber ) {
 
+				getAllLines( "            " );
+
+				line = line.substr( tag.length );
+
+				thisGbk.reference[ referenceNumber ].journal = line;
+
 			}
 
 			function parsePubmed( referenceNumber ) {
+
+				getAllLines( "            " );
+
+				line = line.substr( tag.length );
+
+				thisGbk.reference[ referenceNumber ].pubmed = line;
+
+			}
+
+		}
+
+		function parseFeatures() {
+
+			getAllLines( "                     " );
+
+			line = line.substr( "                     ".length );
+
+			thisGbk.features.features = line;
+
+			console.log( line );
+
+			iLine++;
+
+			// Parse one line at a time
+			for ( ; iLine < rawGbkText.length; ) {
+
+				console.log( line );
+
+				line = rawGbkText[ iLine ];
+
+				console.log( line );
+
+				if ( line.substr( 0,5 ) != "     " ) {
+
+					return;
+
+				}
+
+				tag = line.substr( 0, 21 );
+
+				switch ( tag ) {
+
+					case "     source          ": parseSource(); break;
+
+					//case "     CDS             ": parseCDS(); break;
+
+					//case "     gene            ": parseGene(); break;
+
+					default:
+
+						console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
+
+						iLine++;
+
+					break;
+
+				}
+
+			}
+
+			function parseSource() {
+
+				getAllLines( "                     ", true );
+
+				line = line.substr( 21 );
+
+				thisGbk.features.source.bases = line
+
+				iLine++;
 
 			}
 
 		}
 
 		// This also increments through lines
-		function getAllLines( condition ) {
+		function getAllLines( condition, newLineToSpace ) {
 
 			for ( iLine++; iLine < rawGbkText.length; ) {
 
-				if ( rawGbkText[ iLine ].substr( 0, condition.length ) == condition ) {
+				if ( rawGbkText[ iLine ].substr( 0, condition.length ) == condition
+					&& newLineToSpace == true ) {
 
 					line = line + " " + rawGbkText[ iLine ].substr( condition.length )
+
+					iLine++;
+
+				} else if ( rawGbkText[ iLine ].substr( 0, condition.length ) == condition
+					&& newLineToSpace == false ) {
+
+					line = line + rawGbkText[ iLine ].substr( condition.length )
 
 					iLine++;
 
