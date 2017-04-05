@@ -1,5 +1,4 @@
-var gbkFile =
-"LOCUS       SCU49845     5028 bp    DNA             PLN       21-JUN-1999\n\
+var gbkFile = "LOCUS       SCU49845     5028 bp    DNA             PLN       21-JUN-1999\n\
 DEFINITION  Saccharomyces cerevisiae TCP1-beta gene, partial cds, and Axl2p\n\
             (AXL2) and Rev7p (REV7) genes, complete cds.\n\
 ACCESSION   U49845\n\

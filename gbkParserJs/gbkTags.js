@@ -1,3 +1,8 @@
 var gbkTags = {
-	"LOCUS": "LOCUS"
+	"LOCUS       ": function() {
+		console.log("test");
+	},
+	test: function() {
+		console.log("test2");
+	}
 }

@@ -96,7 +96,7 @@ function Gbk( args ) {
 
 		function parseLocus() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			thisGbk.locus = {};
 
@@ -340,7 +340,7 @@ function Gbk( args ) {
 
 		function parseDefinition() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			line = line.substr( tag.length );
 
@@ -354,7 +354,7 @@ function Gbk( args ) {
 
 		function parseAccession() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			line = line.substr( tag.length );
 
@@ -368,7 +368,7 @@ function Gbk( args ) {
 
 		function parseVersion() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			line = line.substr( tag.length );
 
@@ -468,7 +468,7 @@ function Gbk( args ) {
 
 		function parseKeywords() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			line = line.substr( tag.length );
 
@@ -515,7 +515,7 @@ function Gbk( args ) {
 
 		function parseSource() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			line = line.substr( tag.length );
 
@@ -558,7 +558,7 @@ function Gbk( args ) {
 			
 			function parseOrganism() {
 
-				getAllLines( "            ", newLineToSpace=true );
+				getAllLines( "            " );
 
 				line = line.substr( tag.length );
 
@@ -610,7 +610,7 @@ function Gbk( args ) {
 
 		function parseReference() {
 
-			getAllLines( "            ", newLineToSpace=true );
+			getAllLines( "            " );
 
 			line = line.substr( tag.length );
 
@@ -755,7 +755,7 @@ function Gbk( args ) {
 
 			function parseAuthors( referenceNumber ) {
 
-				getAllLines( "            ", newLineToSpace=true );
+				getAllLines( "            " );
 
 				line = line.substr( tag.length );
 
@@ -925,7 +925,7 @@ function Gbk( args ) {
 
 			function parseTitle( referenceNumber ) {
 
-				getAllLines( "            ", newLineToSpace=true );
+				getAllLines( "            " );
 
 				line = line.substr( tag.length );
 
@@ -935,7 +935,7 @@ function Gbk( args ) {
 
 			function parseJournal( referenceNumber ) {
 
-				getAllLines( "            ", newLineToSpace=true );
+				getAllLines( "            " );
 
 				line = line.substr( tag.length );
 
@@ -945,7 +945,7 @@ function Gbk( args ) {
 
 			function parsePubmed( referenceNumber ) {
 
-				getAllLines( "            ", newLineToSpace=true );
+				getAllLines( "            " );
 
 				line = line.substr( tag.length );
 
@@ -957,18 +957,24 @@ function Gbk( args ) {
 
 		function parseFeatures() {
 
-			getAllLines( "                     ", newLineToSpace=true );
+			getAllLines( "                     " );
 
 			line = line.substr( "                     ".length );
 
 			thisGbk.features.features = line;
+
+			console.log( line );
 
 			iLine++;
 
 			// Parse one line at a time
 			for ( ; iLine < rawGbkText.length; ) {
 
+				console.log( line );
+
 				line = rawGbkText[ iLine ];
+
+				console.log( line );
 
 				if ( line.substr( 0,5 ) != "     " ) {
 
@@ -1000,7 +1006,7 @@ function Gbk( args ) {
 
 			function parseSource() {
 
-				getAllLines( "                     ", newLineToSpace=true );
+				getAllLines( "                     ", true );
 
 				line = line.substr( 21 );
 
