@@ -963,8 +963,6 @@ function Gbk( args ) {
 
 			thisGbk.features.features = line;
 
-			iLine++;
-
 			// Parse one line at a time
 			for ( ; iLine < rawGbkText.length; ) {
 
@@ -1000,13 +998,69 @@ function Gbk( args ) {
 
 			function parseSource() {
 
-				getAllLines( "                     ", newLineToSpace=true );
+				getAllLinesB( "                     ", newLineToSpace=true );
 
 				line = line.substr( 21 );
 
-				thisGbk.features.source.bases = line
+				thisGbk.features.source = {};
 
-				iLine++;
+				thisGbk.features.source.baseRange = line;
+
+				// Parse one line at a time
+				for ( ; iLine < rawGbkText.length; ) {
+
+					line = rawGbkText[ iLine ];
+
+					if ( line.substr( 0, 21 ) != "                     " ) {
+
+						return;
+
+					}
+
+					// Get tag and remove it and white space from line
+					var tag = ""
+
+					for ( var i = 22; i < line.length; i++ ) {
+
+						if ( line.charAt( i ) != "=" ) {
+
+							tag = tag + line.charAt( i )
+
+						} else {
+
+							line = line.substr( i + 1 );
+
+							break;
+
+						}
+
+					}
+
+					switch ( tag ) {
+
+						case "organism": parseOrganism(); break;
+
+						default:
+
+							console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
+
+							iLine++;
+
+						break;
+
+					}
+
+					function parseOrganism() {
+
+						getAllLinesB( "                     ", newLineToSpace=true );
+
+						line = removeQuotes( line );
+
+						thisGbk.features.source.organism = line;
+
+					}
+
+				}
 
 			}
 
@@ -1041,21 +1095,64 @@ function Gbk( args ) {
 
 		}
 
+		// This is for FEATURES
+		function getAllLinesB( condition, newLineToSpace) {
+
+			for ( iLine++; iLine < rawGbkText.length; ) {
+
+				var nextLine = rawGbkText[ iLine ];
+
+				if ( nextLine.substr( 0, condition.length ) == condition
+					&& (nextLine.charAt( 20 ) != "/" && nextLine.indexOf( "=" ) == -1 )
+					&& newLineToSpace == true ) {
+
+					console.log( "true" );
+
+					line = line + " " + nextLine.substr( condition.length );
+
+					iLine++;
+
+				} else if ( nextLine.substr( 0, condition.length ) == condition
+					&& (nextLine.charAt( 20 ) != "/" && nextLine.indexOf( "=" ) == -1 )
+					&& newLineToSpace == false ) {
+
+					line = line + nextLine.substr( condition.length );
+
+					iLine++;
+
+				} else {
+
+					break;
+
+				}
+
+			}
+
+		}
+
+		function removeQuotes( line ) {
+
+			if ( line.startsWith( "\"" ) == true ) {
+
+				line = line.slice( 1 )
+
+			}
+
+			if ( line.endsWith( "\"" ) == true ) {
+
+				line = line.slice( 0, -1 )
+
+			}
+
+			return line;
+
+		}
+
 	}
 
 	return this;
 
 }
 // End Constructor
-
-// Methods (organize methods by function and relationship)
-Gbk.staticMethodA = function() {
-
-}
-
-Gbk.prototype.instanceMethodA = function() {
-
-}
-// End Methods
 
 // End Class
