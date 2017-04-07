@@ -34,6 +34,8 @@ function Gbk( args ) {
 	};
 	this.reference = {};
 	this.features = {};
+	this.features.cds = []
+	this.features.gene = []
 
 	/*
 		args[ rawGbkText ]
@@ -980,7 +982,7 @@ function Gbk( args ) {
 
 					case "     source          ": parseSource(); break;
 
-					//case "     CDS             ": parseCDS(); break;
+					case "     CDS             ": parseCDS(); break;
 
 					//case "     gene            ": parseGene(); break;
 
@@ -1040,6 +1042,12 @@ function Gbk( args ) {
 
 						case "organism": parseOrganism(); break;
 
+						case "db_xref": parseDb_xref(); break;
+
+						case "chromosome": parseChromosome(); break;
+
+						case "map": parseMap(); break;
+
 						default:
 
 							console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
@@ -1054,13 +1062,174 @@ function Gbk( args ) {
 
 						getAllLinesB( "                     ", newLineToSpace=true );
 
-						line = removeQuotes( line );
+						removeQuotes( line );
 
 						thisGbk.features.source.organism = line;
 
 					}
 
+					function parseDb_xref() {
+
+						checkTag( tag );
+
+						getAllLinesB( "                     ", newLineToSpace=true );
+
+						removeQuotes( line );
+
+						console.log( line.slice( 0, 5 ) );
+
+						if ( line.slice( 0, 5 ) == "taxon" ) {
+
+							thisGbk.features.source[ tag ].taxon = line.slice( 6 );
+
+						}
+
+						
+
+					}
+
+					function parseChromosome() {
+
+						getAllLinesB( "                     ", newLineToSpace=true );
+
+						removeQuotes( line );
+
+						thisGbk.features.source.chromosome = line;
+
+					}
+
+					function parseMap() {
+
+						getAllLinesB( "                     ", newLineToSpace=true );
+
+						removeQuotes( line );
+
+						thisGbk.features.source.map = line;
+
+					}
+
 				}
+
+			}
+
+			function parseCDS() {
+
+				getAllLinesB( "                     ", newLineToSpace=false );
+
+				line = line.substr( 21 );
+
+				thisGbk.features.cds.push( {} );
+
+				iCds = thisGbk.features.cds.length - 1;
+
+				thisGbk.features.cds[ iCds ].baseRange = line;
+
+				// Parse one line at a time
+				for ( ; iLine < rawGbkText.length; ) {
+
+					line = rawGbkText[ iLine ];
+
+					if ( line.substr( 0, 21 ) != "                     " ) {
+
+						return;
+
+					}
+
+					// Get tag and remove it and white space from line
+					var tag = ""
+
+					for ( var i = 22; i < line.length; i++ ) {
+
+						if ( line.charAt( i ) != "=" ) {
+
+							tag = tag + line.charAt( i )
+
+						} else {
+
+							line = line.substr( i + 1 );
+
+							break;
+
+						}
+
+					}
+
+					switch ( tag ) {
+
+						case "codon_start": parseCodon_start(); break;
+
+						case "product": parseProduct(); break;
+
+						case "protein_id": parseProtein_id(); break;
+
+						case "db_xref": parseDb_xref(); break;
+
+						default:
+
+							console.log( "WARNING: Unrecognized Tag (\"" + tag + "\") at line " + (iLine + 1) + "." );
+
+							iLine++;
+
+						break;
+
+					}
+
+					function parseCodon_start() {
+
+						getAllLinesB( "                     ", newLineToSpace=false );
+
+						removeQuotes( line );
+
+						thisGbk.features.cds[ iCds ].codon_start = line;
+
+					}
+
+					function parseProduct() {
+
+						getAllLinesB( "                     ", newLineToSpace=true );
+
+						removeQuotes( line );
+
+						thisGbk.features.cds[ iCds ].product = line;
+
+					}
+
+					function parseProtein_id() {
+
+						getAllLinesB( "                     ", newLineToSpace=false );
+
+						removeQuotes( line );
+
+						thisGbk.features.cds[ iCds ].protein_id = line;
+
+					}
+
+					function parseDb_xref() {
+
+						getAllLinesB( "                     ", newLineToSpace=false );
+
+						removeQuotes( line );
+
+						thisGbk.features.cds[ iCds ].db_xref = line;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		// This throws a warning if tag is overwritten or generates 
+		function checkTag( tag ) {
+
+			if ( thisGbk.features.source.hasOwnProperty( tag ) ) {
+
+				console.log( "WARNING: " + tag + " already exists and has been overwritten." )
+
+			} else {
+
+				thisGbk.features.source[ tag ] = {};
 
 			}
 
@@ -1130,7 +1299,7 @@ function Gbk( args ) {
 
 		}
 
-		function removeQuotes( line ) {
+		function removeQuotes() {
 
 			if ( line.startsWith( "\"" ) == true ) {
 
@@ -1143,8 +1312,6 @@ function Gbk( args ) {
 				line = line.slice( 0, -1 )
 
 			}
-
-			return line;
 
 		}
 
