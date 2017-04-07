@@ -1042,7 +1042,7 @@ function Gbk( args ) {
 
 						case "organism": parseOrganism(); break;
 
-						case "db_xref": parseDb_xref(); break;
+						case "db_xref": parseDb_xref( thisGbk.features.source, tag ); break;
 
 						case "chromosome": parseChromosome(); break;
 
@@ -1060,51 +1060,37 @@ function Gbk( args ) {
 
 					function parseOrganism() {
 
-						getAllLinesB( "                     ", newLineToSpace=true );
-
-						removeQuotes( line );
-
-						thisGbk.features.source.organism = line;
-
-					}
-
-					function parseDb_xref() {
-
-						checkTag( tag );
+						checkTag( thisGbk.features.source, tag );
 
 						getAllLinesB( "                     ", newLineToSpace=true );
 
 						removeQuotes( line );
 
-						console.log( line.slice( 0, 5 ) );
-
-						if ( line.slice( 0, 5 ) == "taxon" ) {
-
-							thisGbk.features.source[ tag ].taxon = line.slice( 6 );
-
-						}
-
-						
+						thisGbk.features.source[ tag ] = line;
 
 					}
 
 					function parseChromosome() {
 
+						checkTag( thisGbk.features.source, tag );
+
 						getAllLinesB( "                     ", newLineToSpace=true );
 
 						removeQuotes( line );
 
-						thisGbk.features.source.chromosome = line;
+						thisGbk.features.source[ tag ] = line;
 
 					}
 
 					function parseMap() {
 
+						checkTag( thisGbk.features.source, tag );
+
 						getAllLinesB( "                     ", newLineToSpace=true );
 
 						removeQuotes( line );
 
-						thisGbk.features.source.map = line;
+						thisGbk.features.source[ tag ] = line;
 
 					}
 
@@ -1162,7 +1148,9 @@ function Gbk( args ) {
 
 						case "protein_id": parseProtein_id(); break;
 
-						case "db_xref": parseDb_xref(); break;
+						case "db_xref": parseDb_xref( thisGbk.features.cds[ iCds ], tag ); break;
+
+						case "translation": parseTranslation(); break;
 
 						default:
 
@@ -1176,41 +1164,49 @@ function Gbk( args ) {
 
 					function parseCodon_start() {
 
+						checkTag( thisGbk.features.cds[ iCds ], tag );
+
 						getAllLinesB( "                     ", newLineToSpace=false );
 
 						removeQuotes( line );
 
-						thisGbk.features.cds[ iCds ].codon_start = line;
+						thisGbk.features.cds[ iCds ][ tag ] = line;
 
 					}
 
 					function parseProduct() {
 
+						checkTag( thisGbk.features.cds[ iCds ], tag );
+
 						getAllLinesB( "                     ", newLineToSpace=true );
 
 						removeQuotes( line );
 
-						thisGbk.features.cds[ iCds ].product = line;
+						thisGbk.features.cds[ iCds ][ tag ] = line;
 
 					}
 
 					function parseProtein_id() {
 
+						checkTag( thisGbk.features.cds[ iCds ], tag );
+
 						getAllLinesB( "                     ", newLineToSpace=false );
 
 						removeQuotes( line );
 
-						thisGbk.features.cds[ iCds ].protein_id = line;
+						thisGbk.features.cds[ iCds ][ tag ] = line;
 
 					}
 
-					function parseDb_xref() {
+					function parseTranslation() {
+
+						checkTag( thisGbk.features.cds[ iCds ], tag );
 
 						getAllLinesB( "                     ", newLineToSpace=false );
 
 						removeQuotes( line );
 
-						thisGbk.features.cds[ iCds ].db_xref = line;
+						thisGbk.features.cds[ iCds ][ tag ] = line;
 
 					}
 
@@ -1220,16 +1216,48 @@ function Gbk( args ) {
 
 		}
 
-		// This throws a warning if tag is overwritten or generates 
-		function checkTag( tag ) {
+		function parseDb_xref( object, tag ) {
 
-			if ( thisGbk.features.source.hasOwnProperty( tag ) ) {
+			if ( object.hasOwnProperty( tag ) == false ) {
 
-				console.log( "WARNING: " + tag + " already exists and has been overwritten." )
+				object[ tag ] = {};
+
+			}
+
+			getAllLinesB( "                     ", newLineToSpace=true );
+
+			removeQuotes( line );
+
+			if ( line.slice( 0, 6 ) == "taxon:" ) {
+
+				checkTag( object[ tag ] , "taxon" );
+
+				object[ tag ].taxon = line.slice( 6 );
+
+			} else if ( line.slice( 0, 3 ) == "GI:" ) {
+
+				checkTag( object[ tag ] , "gi" );
+
+				object[ tag ].gi = line.slice( 3 );
 
 			} else {
 
-				thisGbk.features.source[ tag ] = {};
+				console.log( "WARNING: Unrecognized db_xref omitted." );
+
+			}
+
+		}
+
+		// This throws a warning if tag is overwritten or generates 
+		function checkTag( object, tag ) {
+
+			if ( object.hasOwnProperty( tag ) ) {
+
+				console.log( "WARNING: " + tag + " already exists for " + object + " and has been overwritten." )
+
+			} else {
+
+				object[ tag ] = {};
 
 			}
 
