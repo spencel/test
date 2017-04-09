@@ -4,4 +4,6 @@ function main() {
 
 	console.log( x )
 
+	x.injectHtml( "body" );
+
 }

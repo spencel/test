@@ -1,4 +1,12 @@
-// Gbk Class
+function main() {
+
+	var x = new Gbk( { "rawGbkText": gbkFile } );
+
+	console.log( x )
+
+	x.injectHtml( "#gbkDump" );
+
+}// Gbk Class
 
 // Static (aka Class) Properties
 Gbk.nextId = 0;

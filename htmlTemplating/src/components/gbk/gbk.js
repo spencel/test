@@ -1462,7 +1462,7 @@ Gbk.prototype.injectHtml = function ( jQuerySelector ) {
 
 	iterateProperties( this );
 
-	strHtml += "</ul>"
+	strHtml += "</ul>";
 
 	element.append( strHtml );
 
