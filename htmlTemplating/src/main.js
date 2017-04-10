@@ -1,11 +1,15 @@
 function main() {
 
-	var x = new Gbk( { "rawGbkText": gbkFile } );
+	//var x = new Gbk( { "rawGbkText": gbkFile } );
 
-	console.log( x )
+	//console.log( x )
 
-	x.injectHtml( "#gbkDump" );
-
-	getGbkList();
+	//x.injectHtml( "#gbkDump" );
 
 }
+
+var Events = {
+
+	current: undefined
+
+};

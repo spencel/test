@@ -1,0 +1,39 @@
+Project Folder Structure
+
+* compA.js is also a class but with views associated with it
+* flat file database url's need to be constants declared once somewhere either in main.js or a class or component
+
+build/
+src/
+	index.html
+	style.css
+	main.js
+	components/
+		compA/
+			compA.html
+			compA.css
+			compA.js
+			views/
+				viewA.html               menus, buttons, data dumps, etc.
+				viewA.css
+				viewA.js
+				viewB.html
+				viewB.css
+				viewB.js
+		compB/
+			compB.html
+			compB.css
+			compB.js
+			views/
+				viewA.html
+				viewA.css
+				viewA.js
+				viewB.html
+				viewB.css
+				viewB.js
+	lib/
+		libA.js                       jQuery can go here
+		libB.js
+	class/
+		classA.js
+		classB.js
