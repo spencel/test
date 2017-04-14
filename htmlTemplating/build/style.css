@@ -1,0 +1,29 @@
+div.tempContainer {
+	position:	absolute;
+	display: 	inline-block;
+	left:		120px;
+	top:		0px;
+}nav.gbkList {
+	position:	fixed;
+	left:		0px;
+	top:		0px;
+	width:		auto;
+	height:		100vh;
+	overflow:   hidden;
+	overflow-y: scroll; 
+}
+nav.gbkList ul {
+	margin:		0px;
+	padding: 	0px;
+	list-style: none;
+}div#gbkDump {
+	overflow-wrap: break-word;
+}
+
+ul {
+	overflow-wrap: inherit;
+}
+
+li {
+	overflow-wrap: inherit;
+}

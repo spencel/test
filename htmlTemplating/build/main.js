@@ -12,21 +12,26 @@ var Events = {
 
 	current: undefined
 
-};document.onclick = function( event ) {
+};function getGbkFileList() {
 
-	Events.current = event;
+	jQuery.ajax({
+		url: "dat/gbk/getGbkFileList.php",
+		username: "phageteam",
+		password: "sdsu2016",
+		success: function( gbkFileNames ) {
 
-	console.log( event.target.id )
+			populateGbkFileList( gbkFileNames );
 
-	strAr_event = event.target.id.split( "-" );
+		}
+	});
+	
+}
 
-	switch( strAr_event[0] ) {
+function populateGbkFileList( gbkFileNames ) {
 
-		case( "e" ): getGbkFile( event, strAr_event ); break;
+	document.getElementById( "gbkList" )
 
-	}
-
-};
+}
 
 function getGbkFile( event, strAr_event ) {
 
@@ -45,7 +50,23 @@ function getGbkFile( event, strAr_event ) {
 		}
 	});
 
-}// Gbk Class
+}
+
+document.onclick = function( event ) {
+
+	Events.current = event;
+
+	console.log( event.target.id )
+
+	strAr_event = event.target.id.split( "-" );
+
+	switch( strAr_event[0] ) {
+
+		case( "e" ): getGbkFile( event, strAr_event ); break;
+
+	}
+
+};// Gbk Class
 
 // Static (aka Class) Properties
 Gbk.nextId = 0;

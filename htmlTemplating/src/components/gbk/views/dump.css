@@ -1,0 +1,11 @@
+div#gbkDump {
+	overflow-wrap: break-word;
+}
+
+ul {
+	overflow-wrap: inherit;
+}
+
+li {
+	overflow-wrap: inherit;
+}

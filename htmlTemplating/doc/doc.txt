@@ -4,10 +4,14 @@ Project Folder Structure
 * flat file database url's need to be constants declared once somewhere either in main.js or a class or component
 
 build/
+	lib/
+		libA.js                       jQuery can go here
+		libB.js
+doc/
 src/
-	index.html
-	style.css
-	main.js
+	class/
+		classA.js
+		classB.js
 	components/
 		compA/
 			compA.html
@@ -31,9 +35,7 @@ src/
 				viewB.html
 				viewB.css
 				viewB.js
-	lib/
-		libA.js                       jQuery can go here
-		libB.js
-	class/
-		classA.js
-		classB.js
+	index.html
+	main.js
+	style.css
+utils/

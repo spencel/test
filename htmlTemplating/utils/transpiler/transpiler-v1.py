@@ -1,6 +1,8 @@
 import io
 import os
 
+# Add a transpiler directive for removing console.log function calls from builds
+
 # Directory of source code
 srcDir = "../../src"
 srcComp = srcDir + "/components"
