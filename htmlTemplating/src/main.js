@@ -1,3 +1,6 @@
+var phpDir = "../../php"
+var datDir = "../../dat"
+
 function main() {
 
 	//var x = new Gbk( { "rawGbkText": gbkFile } );

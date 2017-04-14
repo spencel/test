@@ -56,6 +56,8 @@ function Gbk( args ) {
 
 	if ( args.hasOwnProperty( "rawGbkText" ) ) {
 
+		console.log(args[ "rawGbkText" ]);
+
 		// Split the raw gbk file text into an array of text lines
 		var rawGbkText = args[ "rawGbkText" ].split( "\n" );
 

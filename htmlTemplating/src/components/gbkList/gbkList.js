@@ -1,7 +1,7 @@
 function getGbkFileList() {
 
 	jQuery.ajax({
-		url: "dat/gbk/getGbkFileList.php",
+		url: phpDir + "/getGbkFileList.php",
 		username: "phageteam",
 		password: "sdsu2016",
 		success: function( gbkFileNames ) {
@@ -24,7 +24,7 @@ function getGbkFile( event, strAr_event ) {
 	console.log( "getGbkFile");
 
 	jQuery.ajax({
-		url: "dat/gbk/getGbkFile.php",
+		url: phpDir + "/getGbkFile.php",
 		username: "phageteam",
 		password: "sdsu2016",
 		data: { data: strAr_event[1] },
