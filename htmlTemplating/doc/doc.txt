@@ -1,7 +1,7 @@
 Project Folder Structure
 
-* compA.js is also a class but with views associated with it
-* flat file database url's need to be constants declared once somewhere either in main.js or a class or component
+* A Component is a Class that has at least one View
+* The class directory contains Classes that have no Views
 
 build/
 	lib/

@@ -44,6 +44,7 @@ with io.open( srcDir + "/index.html", "r", encoding="utf-8" ) as srcFile:
 	
 		for line in srcFile:
 
+			# Execute the code below if a Component is found
 			while "<component " in line:
 
 				i1 = line.find( compEle )
@@ -51,33 +52,49 @@ with io.open( srcDir + "/index.html", "r", encoding="utf-8" ) as srcFile:
 				compRef = line[ i1 : i2 + 1 ]
 				compArr = line[ i1 + len( compEle ) : i2 ].split( "-" )
 				compName = compArr[ 0 ]
+				compPath = srcComp + "/" +  compName + "/" + compName
 
-				with io.open( buildDir + "/main.js", "a", encoding="utf-8" ) as buildScriptFile:
-					buildScriptFile.write( io.open( srcComp + "/" +  compName + "/" + compName + ".js", "r", encoding="utf-8" ).read() )
+				# Transpile the Component's js file if it exists
+				if ( os.path.exists( compPath + ".js" ) ):
+					with io.open( buildDir + "/main.js", "a", encoding="utf-8" ) as buildJsFile:
+						with io.open( compPath + ".js", "r", encoding="utf-8" ) as srcJsFile:
+							buildJsFile.write( srcJsFile.read() )
 
-				with io.open( buildDir + "/style.css", "a", encoding="utf-8" ) as buildCssFile:
-						buildCssFile.write( io.open( srcComp + "/" +  compName + "/" + compName + ".css", "r", encoding="utf-8" ).read() )
+				# Transpile the Component's css file if it exists
+				if ( os.path.exists( compPath + ".css" ) ):
+					with io.open( buildDir + "/style.css", "a", encoding="utf-8" ) as buildCssFile:
+						with io.open( compPath + ".css", "r", encoding="utf-8" ) as srcCssFile:
+							buildCssFile.write( srcCssFile.read() )
 				
-				# If it references a display
-				if len( compArr ) > 1:
-					compView = compArr[ 1 ]
-					compHtml = io.open( srcComp + "/" +  compName + "/views/" + compView + ".html", "r", encoding="utf-8" ).read()
+				# If the Directive does not include a View, then...
+				if len( compArr ) == 1:
+
+					compHtml = io.open( compPath + ".html", "r", encoding="utf-8" ).read()
 					line = line.replace( compRef, compHtml )
 
-					# Get Style
-					with io.open( buildDir + "/style.css", "a", encoding="utf-8" ) as buildCssFile:
-						buildCssFile.write( io.open( srcComp + "/" +  compName + "/views/" + compView + ".css", "r", encoding="utf-8" ).read() )
-
-					# Get Script
-					with io.open( buildDir + "/main.js", "a", encoding="utf-8" ) as buildJsFile:
-						buildJsFile.write( io.open( srcComp + "/" +  compName + "/views/" + compView + ".js", "r", encoding="utf-8" ).read() )
-
+				# Else the Component Directive includes a View, e.g., "gbk-dump", where "dump" is the name of the View
 				else:
 
-					compHtml = io.open( srcComp + "/" +  compName + "/" + compName + ".html", "r", encoding="utf-8" ).read()
-					line = line.replace( compRef, compHtml )
+					compView = compArr[ 1 ]
+					compViewPath = srcComp + "/" +  compName + "/views/" + compView
 
+					# Transpile View's html file if it exists
+					if ( os.path.exists( compViewPath + ".html" ) ):
+						with io.open( compViewPath + ".html", "r", encoding="utf-8" ) as srcHtmlFile:
+							compViewHtml = srcHtmlFile.read()
+							line = line.replace( compRef, compViewHtml )
 
+					# Transpile the View's css file if it exists
+					if ( os.path.exists( compViewPath + ".css" ) ):
+						with io.open( buildDir + "/style.css", "a", encoding="utf-8" ) as buildCssFile:
+							with io.open( compViewPath + ".css", "r", encoding="utf-8" ) as srcCssFile:
+								buildCssFile.write( srcCssFile.read() )
+
+					# Transpile the View's js file if it exists
+					if ( os.path.exists( compViewPath + ".js" ) ):
+						with io.open( buildDir + "/main.js", "a", encoding="utf-8" ) as buildJsFile:
+							with io.open( compViewPath + ".js", "r", encoding="utf-8" ) as srcJsFile:
+								buildJsFile.write( srcJsFile.read() )
 
 			buildFile.write( line )
 
