@@ -1,5 +1,6 @@
 div#gbkDump {
 	overflow-wrap:	break-word;
+	background-color: hsla( 0, 0%, 100%, 1 );
 }
 
 ul {

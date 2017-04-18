@@ -4,21 +4,50 @@ div.tempContainer {
 	left:		115px;
 	top:		0px;
 	width:		800px;
-}nav.gbkList {
+}div.gbkViewer {
+	position:	absolute;
+	left:		0px;
+	top:		0px;
+	width:		100%;
+	height:		auto;
+}
+
+div.gbkViewer div.gbkList {
 	position:	fixed;
 	left:		0px;
 	top:		0px;
-	width:		115px;
+	width:		120px;
 	height:		100vh;
 	overflow:   hidden;
 	overflow-y: scroll; 
 }
+
+div.gbkViewer div.gbkDump {
+	position:	absolute;
+	left:		120px;
+	top:		0px;
+	width:		calc( 100% - 120px );
+	height:		auto;
+}nav.gbkList {
+	background-color: hsla( 0, 0%, 100%, 1 )
+}
+
 nav.gbkList ul {
 	margin:		0px;
 	padding: 	0px;
 	list-style: none;
+	cursor:		pointer;
+}
+
+nav.gbkList ul li:hover {
+	background-color: 	hsla( 0, 0%, 92%, 1 )
+}
+
+nav.gbkList ul li a {
+	color:				hsla( 0, 0%, 0%, 1 );
 }div#gbkDump {
 	overflow-wrap:	break-word;
+	background-color: hsla( 0, 0%, 100%, 1 );
 }
 
 ul {

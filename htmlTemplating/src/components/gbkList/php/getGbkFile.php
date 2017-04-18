@@ -1,10 +1,12 @@
 <?php
 
+$gbkDir = "../dat/gbk/";
+
 $dataFromUser = $_REQUEST[ "data" ];
 
 $fileName = $dataFromUser;
 
-$filePath = "../dat/gbk/" . $fileName;
+$filePath = $gbkDir . $fileName;
 
 echo readfile( $filePath );
 

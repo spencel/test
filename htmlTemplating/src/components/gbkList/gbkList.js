@@ -6,16 +6,27 @@ function getGbkFileList() {
 		password: "sdsu2016",
 		success: function( gbkFileNames ) {
 
-			populateGbkFileList( gbkFileNames );
+			var arFilesNames = gbkFileNames.split( "\n" );
+
+			populateGbkFileList( arFilesNames );
 
 		}
 	});
 	
 }
 
-function populateGbkFileList( gbkFileNames ) {
+function populateGbkFileList( arFilesNames ) {
 
-	document.getElementById( "gbkList" )
+	var strHtml = "<ul>";
+
+	for ( var i = 0; i < arFilesNames.length; i++ ) {
+
+		strHtml += "<li><a id=\"e-" + arFilesNames[ i ] + "\">" + arFilesNames[ i ] + "</a></li>";
+	}
+
+	strHtml += "</ul>";
+
+	document.getElementById( "gbkList" ).innerHTML =  strHtml;
 
 }
 

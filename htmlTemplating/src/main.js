@@ -3,6 +3,8 @@ var datDir = "../../dat"
 
 function main() {
 
+	getGbkFileList();
+
 	//var x = new Gbk( { "rawGbkText": gbkFile } );
 
 	//console.log( x )
