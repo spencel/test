@@ -37,7 +37,26 @@ with io.open( srcDir + "/style.css", "r", encoding="utf-8" ) as srcFile:
 
 			buildFile.write( line )
 
-# Parse index.html and build it
+# Parse directives in html
+def lookForHtmlDirectives( entry ):
+	with io.open( entry.path, "r", encoding="utf-8" ) as f:
+		for line in f:
+			print( line )
+			if "<<" in line:
+				pass
+
+def loopThroughDir( path ):
+	for entry in os.scandir( path ):
+		if entry.name.endswith( ".html" ):
+			print( entry.name )
+			lookForHtmlDirectives( entry )
+		elif entry.is_dir():
+			print( entry.name )
+			loopThroughDir( path + "/" + entry.name )
+
+loopThroughDir( srcDir )
+
+# Parse index.html and put components together
 with io.open( srcDir + "/index.html", "r", encoding="utf-8" ) as srcFile:
 
 	with io.open( buildDir + "/index.html", "w", encoding="utf-8" ) as buildFile:

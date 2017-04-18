@@ -40,7 +40,7 @@ function populateGbkFileList( arFilesNames ) {
 
 	for ( var i = 0; i < arFilesNames.length; i++ ) {
 
-		strHtml += "<li><a id=\"e-" + arFilesNames[ i ] + "\">" + arFilesNames[ i ] + "</a></li>";
+		strHtml += "<li id=\"e-" + arFilesNames[ i ] + "\">" + arFilesNames[ i ] + "</li>";
 	}
 
 	strHtml += "</ul>";
