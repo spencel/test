@@ -1,0 +1,4 @@
+Sequence of events/processing
+
+1. Inject all components, e.g., "<component gbkViewer>"
+2. Inject variables, e.g., "$myClass.myVariable"

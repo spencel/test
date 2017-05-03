@@ -24,17 +24,30 @@
 
 	<body onload='main();'>
 
-		<!--<component gbkViewer>-->
-		<div id="x">
-			<div id="{ test.myVariable }" class="{ test.myVariable }">{ test.myVariable } \{this will be ignored because of the escape character "\"}</div>
-		</div>
+		<!--<div class="gbkViewer">
+
+	<div class="gbkList">
+
+		<<nav id="gbkList" class="gbkList">
+	<ul>
+		<for $element in $arFilesNames>
+			<li id="e-$element">$element</li>
+		</for>
+	</ul>
+</nav>>
+
+	</div>
+
+	<div class="gbkDump">
+
+		<div id="gbkDump"></div>
+
+	</div>
+	
+</div>
+-->
+		<div id="{ test.myVariable }" class="{ test.myVariable }">{ test.myVariable } \{hello}</div>
 
 	</body>
-
-<script>
-
-	document.getElementById( "x" ).innerHTML = 
-
-</script>
 
 </html>

@@ -3,6 +3,11 @@ import os
 
 # Add a transpiler directive for removing console.log function calls from builds
 
+# Constant Variables
+ESCAPE_CHARACTER = "\\"
+DATA_LEFT_BRACKET = "{"
+DATA_RIGHT_BRACKET = "}"
+
 # Directory of source code
 srcDir = "../../src"
 srcComp = srcDir + "/components"
@@ -19,7 +24,7 @@ validNameChars = "abcdefghijklmnopqrstuvwxyz-_"
 # Get list of components
 componentList = os.listdir( srcDir + "/components" )
 
-# Build app
+# Build main.js
 with io.open( srcDir + "/main.js", "r", encoding="utf-8" ) as srcFile:
 
 	with io.open( buildDir + "/main.js", "w", encoding="utf-8" ) as buildFile:
@@ -56,11 +61,12 @@ def loopThroughDir( path ):
 
 loopThroughDir( srcDir )
 
-# Parse index.html and put components together
+# Parse index.html and put components together (should be done per webpage ie html file so that its script is particular to it and includes only what is needed)
 with io.open( srcDir + "/index.html", "r", encoding="utf-8" ) as srcFile:
 
-	with io.open( buildDir + "/index.html", "w", encoding="utf-8" ) as buildFile:
+	with io.open( buildDir + "/indexPreData.html", "w", encoding="utf-8" ) as buildFile:
 	
+		# Inject Components
 		for line in srcFile:
 
 			# Execute the code below if a Component is found
@@ -116,4 +122,50 @@ with io.open( srcDir + "/index.html", "r", encoding="utf-8" ) as srcFile:
 								buildJsFile.write( srcJsFile.read() )
 
 			buildFile.write( line )
+
+# Inject Data, i.e, variables, arrays, objects, etc.
+
+dctAlreadyAdded = {}
+
+with io.open( buildDir + "/indexPreData.html", "r", encoding="utf-8" ) as inputHtmlFile :
+
+	with io.open( buildDir + "/index.html", "w", encoding="utf-8" ) as outputHtmlFile :
+
+		for line in inputHtmlFile:
+
+			startFromIndex = 0
+			leftBracketIndex = line.find( DATA_LEFT_BRACKET, startFromIndex )
+
+			while leftBracketIndex > -1 :
+
+				if line[ leftBracketIndex - 1 ] != ESCAPE_CHARACTER :
+
+					startFromIndex = leftBracketIndex + 1
+
+					rightBracketIndex = line.find( DATA_RIGHT_BRACKET, startFromIndex )
+
+					if line[ rightBracketIndex - 1 ] != ESCAPE_CHARACTER :
+
+						# Parse Identifier
+
+						arrIdentifier = line[ leftBracketIndex + 1 : rightBracketIndex].strip( " " ).split( "." )
+
+						for identifier in arrIdentifier :
+
+							# left off here
+
+						print( identifier )
+
+						startFromIndex = rightBracketIndex + 1
+
+					else :
+
+						print( "ERROR: Could not parse Identifier because the right bracket could not be found. Html file may therefore not work as intended.")
+
+
+
+				leftBracketIndex = line.find( DATA_LEFT_BRACKET, startFromIndex )
+
+			outputHtmlFile.write( line )
+
 
