@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2015, Spencer Lank. All rights reserved. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<title></title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="phys_v0.5.js"></script>
+<script src="main.js"></script>
+<style>
+body{
+margin:0px;/*remove space between view port and first child elements*/
+padding:0px;
+font-family:arial;
+font-size:0px;/*remove space between inline elements*/
+}
+table{
+position:relative;
+border-collapse:collapse;
+}
+table.me{
+width:100%;
+}
+table.ta{
+width:100%;
+}
+table.sus{
+position:absolute;
+}
+table.topButtons{
+margin-left:auto;
+}
+tr{
+}
+td{
+padding:0px 4px;
+border:1px solid white;
+height:19px;
+font-size:medium;
+white-space:pre;
+background:aliceblue;
+}
+td.ce{
+min-width:15px;
+min-height:15px;
+}
+td.se{
+outline:1px solid black;
+}
+td.ta{
+padding:0px;
+}
+td.neRo{
+text-align:center;
+cursor:pointer;
+}
+td.neCo{
+cursor:pointer;
+}
+td.ceBu{
+background:#FFF0FF;
+}
+td.expandButton{
+min-width:15px;
+min-height:15px;
+text-align:center;
+cursor:pointer;
+}
+td.collapseButton{
+min-width:15px;
+min-height:15px;
+text-align:center;
+cursor:pointer;
+}
+input.ce{
+margin:0px;padding:0px;
+border:0px;
+outline:0px;
+font-family:arial;
+font-size:medium;
+background:aliceblue;
+resize:none;
+}
+input.ce::-ms-clear{/*Hide the Clear Button (X button) in IE*/
+display:none;
+}
+div.bu{
+display:inline-block;
+min-width:10px;
+padding:0px 2px;
+margin-left:0px;
+outline:1px solid black;
+text-align:center;
+font-weight:normal;
+background:#FFF0FF;/*cornsilk;*/
+cursor:pointer;
+}
+div.buPrd{
+display:inline-block;
+min-width:10px;
+padding:0px 2px;
+margin-left:0px;
+outline:1px solid black;
+text-align:center;
+font-weight:normal;
+background:#7fffd4;
+cursor:pointer;
+}
+.b{
+font-weight:bold;
+}
+.taNa{
+font-weight:bold;
+}
+.circle {
+width:50px;
+height:50px;
+-webkit-border-radius:50%;
+-moz-border-radius:50%;
+border-radius:50%;
+background-color:black;
+}
+</style>
+</head>
+<body onload='main()'>
+</body>
+
+</html>

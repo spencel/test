@@ -1,0 +1,36 @@
+Molecule
+	types:
+		monomer
+		dimer
+		polymer
+		organic
+		inorganic
+	subunits:
+		Atom
+			Isotope (all atoms are isotopes, the number of neutrons in the nucleus)
+			subunits:
+				Nucleus
+					subunits:
+						Nucleon
+							types:
+								Neutron
+									subunits:
+										Elementary Particle
+											types:
+												down quark
+												up quark
+								Proton
+									subunits:
+										Elementary Particle
+											types:
+												down quark
+												up quark
+				Elementary Particle
+					types:
+						Electron
+		Bond
+			types:
+				Sigma
+				Pi
+			subunits:
+				Electron

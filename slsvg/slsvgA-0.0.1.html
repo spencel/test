@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>slsvg</title>
+
+<style>
+
+body{
+margin:0 auto;
+}
+#svg{
+position:absolute;
+width:100%;
+height:100%;
+cursor:pointer;
+}
+#canvas{
+position:absolute;
+width:100%;
+height:100%;
+}
+#analyticsPane{
+position:absolute;
+right:0px;
+}
+#toggleAnalytics{
+text-align:right;
+}
+
+/* misc */
+.bold{
+font-weight:bold;
+}
+
+</style>
+
+<script></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="snap.svg-min-0.4.1.js"></script>
+<script>
+
+function main(){
+
+// initialize
+var j = jQuery;
+var jBody = j("body");
+var jSvg = j("#svg");
+var activeTool = "none";
+// Circle Tool
+var newCircle;
+var circleOriginLeft;
+var circleOriginTop;
+var horizontalLine;
+var verticalLine;
+// End Circle Tool
+// Ellipse Tool
+
+// End Ellipse Tool
+// Key Down
+var shiftKeyDown = false;
+// End Key Down
+
+//j("#analytics").toggle();
+
+// data
+
+// mouse
+jBody.on("mousemove",function(e){
+	var eOffsetX = e.offsetX;
+	var eOffsetY = e.offsetY;
+
+	// Analytics
+	j("#svgLeft").html(eOffsetX);
+	j("#svgTop").html(eOffsetY);
+	j("#viewPortX").html(eOffsetX);
+	j("#viewPortY").html(jSvg.height() - eOffsetY);
+	// End Analytics
+
+	// Tools
+	switch (activeTool){
+
+	// Circle Tool
+	case "circle":
+		
+	
+
+	break; // case "circle":
+	// End Circle Tool
+
+	// Conic Section Tool
+	case "ellipse":
+	
+	// Ellipse Tool
+	if (shiftKeyDown == true){
+
+	deltaLeft = eOffsetX - circleOriginLeft;
+	deltaTop = eOffsetY - circleOriginTop;
+	if (deltaLeft < 0){
+		deltaLeft = -1*deltaLeft;
+		// upper left quadrant:
+		if (deltaTop < 0){
+			deltaTop = -1*deltaTop;
+			var circleRadiusX = deltaLeft/2;
+			var circleRadiusY = deltaTop/2;
+			newCircle.attr({
+				cx: circleOriginLeft - circleRadiusX,
+				cy: circleOriginTop - circleRadiusY,
+				rx: circleRadiusX,
+				ry: circleRadiusY,
+				strokeWidth: 1
+			});
+			horizontalLine.attr({
+				x1:circleOriginLeft,
+				y1:circleOriginTop - deltaTop,
+				x2:circleOriginLeft - deltaLeft,
+				y2:circleOriginTop - deltaTop
+			});
+			verticalLine.attr({
+				x1:circleOriginLeft - deltaLeft,
+				y1:circleOriginTop,
+				x2:circleOriginLeft - deltaLeft,
+				y2:circleOriginTop - deltaTop
+			});
+		// bottom left quadrant:
+		} else {
+			var circleRadiusX = deltaLeft/2;
+			var circleRadiusY = deltaTop/2;
+			newCircle.attr({
+				cx: circleOriginLeft - circleRadiusX,
+				cy: circleOriginTop + circleRadiusY,
+				rx: circleRadiusX,
+				ry: circleRadiusY,
+				strokeWidth: 1
+			});
+			horizontalLine.attr({
+				x1:circleOriginLeft,
+				y1:circleOriginTop + deltaTop,
+				x2:circleOriginLeft - deltaLeft,
+				y2:circleOriginTop + deltaTop
+			});
+			verticalLine.attr({
+				x1:circleOriginLeft - deltaLeft,
+				y1:circleOriginTop,
+				x2:circleOriginLeft - deltaLeft,
+				y2:circleOriginTop + deltaTop
+			});
+		}
+	} else {
+		// upper right quadrant:
+		if (deltaTop < 0){
+			deltaTop = -1*deltaTop;
+			var circleRadiusX = deltaLeft/2;
+			var circleRadiusY = deltaTop/2;
+			newCircle.attr({
+				cx: circleOriginLeft + circleRadiusX,
+				cy: circleOriginTop - circleRadiusY,
+				rx: circleRadiusX,
+				ry: circleRadiusY,
+				strokeWidth: 1
+			});
+			horizontalLine.attr({
+				x1:circleOriginLeft,
+				y1:circleOriginTop - deltaTop,
+				x2:circleOriginLeft + deltaLeft,
+				y2:circleOriginTop - deltaTop
+			});
+			verticalLine.attr({
+				x1:circleOriginLeft + deltaLeft,
+				y1:circleOriginTop,
+				x2:circleOriginLeft + deltaLeft,
+				y2:circleOriginTop - deltaTop
+			});
+		// bottom right quadrant:
+		} else {
+			var circleRadiusX = deltaLeft/2;
+			var circleRadiusY = deltaTop/2;
+			newCircle.attr({
+				cx: circleOriginLeft + circleRadiusX,
+				cy: circleOriginTop + circleRadiusY,
+				rx: circleRadiusX,
+				ry: circleRadiusY,
+				strokeWidth: 1
+			});
+			horizontalLine.attr({
+				x1:circleOriginLeft,
+				y1:circleOriginTop + deltaTop,
+				x2:circleOriginLeft + deltaLeft,
+				y2:circleOriginTop + deltaTop
+			});
+			verticalLine.attr({
+				x1:circleOriginLeft + deltaLeft,
+				y1:circleOriginTop,
+				x2:circleOriginLeft + deltaLeft,
+				y2:circleOriginTop + deltaTop
+			});
+		}
+	}
+	// End Ellipse Subtool
+	
+	// Circle Tool
+	} else {
+
+	deltaLeft = eOffsetX - circleOriginLeft;
+	deltaTop = eOffsetY - circleOriginTop;
+	if (deltaLeft < 0){
+		deltaLeft = -1*deltaLeft;
+		// upper left quadrant:
+		if (deltaTop < 0){
+			deltaTop = -1*deltaTop;
+			if (deltaLeft > deltaTop){
+				var circleRadius = deltaLeft/2;
+				newCircle.attr({
+					cx: circleOriginLeft - circleRadius,
+					cy: circleOriginTop - circleRadius,
+					r: circleRadius
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop - deltaLeft,
+					x2:circleOriginLeft - deltaLeft,
+					y2:circleOriginTop - deltaLeft
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft - deltaLeft,
+					y1:circleOriginTop,
+					x2:circleOriginLeft - deltaLeft,
+					y2:circleOriginTop - deltaLeft
+				});
+			} else {
+				var circleRadius = deltaTop/2;
+				newCircle.attr({
+					cx: circleOriginLeft - circleRadius,
+					cy: eOffsetY + circleRadius,
+					r: circleRadius
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop - deltaTop,
+					x2:circleOriginLeft - deltaTop,
+					y2:circleOriginTop - deltaTop
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft - deltaTop,
+					y1:circleOriginTop,
+					x2:circleOriginLeft - deltaTop,
+					y2:circleOriginTop - deltaTop
+				});
+			}
+		// bottom left quadrant:
+		} else {
+			if (deltaLeft > deltaTop){
+				console.log(1);
+				var circleRadius = deltaLeft/2;
+				newCircle.attr({
+					cx: circleOriginLeft - circleRadius,
+					cy: circleOriginTop + circleRadius,
+					r: circleRadius
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop + deltaLeft,
+					x2:circleOriginLeft - deltaLeft,
+					y2:circleOriginTop + deltaLeft
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft - deltaLeft,
+					y1:circleOriginTop,
+					x2:circleOriginLeft - deltaLeft,
+					y2:circleOriginTop + deltaLeft
+				});
+			} else {
+				console.log(2);
+				var circleRadius = deltaTop/2;				
+				newCircle.attr({
+					cx: circleOriginLeft - circleRadius,
+					cy: circleOriginTop + circleRadius,
+					r: circleRadius
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop + deltaTop,
+					x2:circleOriginLeft - deltaTop,
+					y2:circleOriginTop + deltaTop
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft - deltaTop,
+					y1:circleOriginTop,
+					x2:circleOriginLeft - deltaTop,
+					y2:circleOriginTop + deltaTop
+				});
+			}
+		}
+	} else {
+		// upper right quadrant:
+		if (deltaTop < 0){
+			deltaTop = -1*deltaTop;
+			if (deltaLeft > deltaTop){
+				var circleRadius = deltaLeft/2;
+				newCircle.attr({
+					cx: circleOriginLeft + circleRadius,
+					cy: circleOriginTop - circleRadius,
+					r: circleRadius
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop - deltaLeft,
+					x2:circleOriginLeft + deltaLeft,
+					y2:circleOriginTop - deltaLeft
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft + deltaLeft,
+					y1:circleOriginTop,
+					x2:circleOriginLeft + deltaLeft,
+					y2:circleOriginTop - deltaLeft
+				});
+			} else {
+				var circleRadius = deltaTop/2;
+				newCircle.attr({
+					cx: circleOriginLeft + circleRadius,
+					cy: eOffsetY + circleRadius,
+					r: circleRadius
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop - deltaTop,
+					x2:circleOriginLeft + deltaTop,
+					y2:circleOriginTop - deltaTop
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft + deltaTop,
+					y1:circleOriginTop,
+					x2:circleOriginLeft + deltaTop,
+					y2:circleOriginTop - deltaTop
+				});
+			}
+		// bottom right quadrant:
+		} else {
+			if (deltaLeft > deltaTop){
+				var circleRadius = deltaLeft/2;
+				newCircle.attr({
+					cx: circleOriginLeft + circleRadius,
+					cy: circleOriginTop + circleRadius,
+					r: circleRadius,
+					strokeWidth: 1
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop + deltaLeft,
+					x2:circleOriginLeft + deltaLeft,
+					y2:circleOriginTop + deltaLeft
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft + deltaLeft,
+					y1:circleOriginTop,
+					x2:circleOriginLeft + deltaLeft,
+					y2:circleOriginTop + deltaLeft
+				});
+			} else {
+				var circleRadius = deltaTop/2;				
+				newCircle.attr({
+					cx: circleOriginLeft + circleRadius,
+					cy: circleOriginTop + circleRadius,
+					r: circleRadius,
+					strokeWidth: 1
+				});
+				horizontalLine.attr({
+					x1:circleOriginLeft,
+					y1:circleOriginTop + deltaTop,
+					x2:circleOriginLeft + deltaTop,
+					y2:circleOriginTop + deltaTop
+				});
+				verticalLine.attr({
+					x1:circleOriginLeft + deltaTop,
+					y1:circleOriginTop,
+					x2:circleOriginLeft + deltaTop,
+					y2:circleOriginTop + deltaTop
+				});
+			}
+		}
+	}
+
+	}
+	// End Circle Tool
+
+	break; 
+	// End Conic Section Tool
+
+	} // End switch(activeTool)
+	
+
+});
+jBody.on("click",function(e){
+	// buttons
+	var eTargetId = e.target.id;
+	switch(eTargetId){
+		case "toggleAnalytics":
+		console.log(eTargetId);
+			j("#analytics").toggle();
+		break;
+	}
+});	
+jBody.on("mousedown",function(e){
+	//e.stopPropagation();
+	var eOffsetX = e.offsetX;
+	var eOffsetY = e.offsetY;
+
+	// Analytics
+	j("#mousedownSvgLeft").html(eOffsetX);
+	j("#mousedownSvgTop").html(eOffsetY);
+	j("#mousedownViewPortX").html(eOffsetX);
+	j("#mousedownViewPortY").html(jSvg.height() - eOffsetY);
+	// End Analytics
+
+	// Tools
+	//activeTool = "circle";
+	activeTool = "ellipse";
+
+	switch (activeTool){
+	
+	// Circle Tool
+	case "circle":
+
+	circleOriginLeft = eOffsetX;
+	circleOriginTop = eOffsetY;
+	newCircle = s0.circle(eOffsetX, eOffsetY, 0).attr({
+		fill:"#ffffff",
+		stroke:"#000000",
+		strokeWidth: 1
+	});
+	// temporary guidelines
+	// horizontal box line
+	horizontalLine = s0.line(circleOriginLeft, circleOriginTop, circleOriginLeft, circleOriginTop).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); ;
+	// vertical box line
+	verticalLine = s0.line(circleOriginLeft, circleOriginTop, circleOriginLeft, circleOriginTop).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); ;
+	// horizontal guideline
+	s0.line(0, circleOriginTop, jSvg.width(), circleOriginTop).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); 
+	// vertical guideline
+	s0.line(circleOriginLeft, 0, circleOriginLeft, jSvg.height()).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); 
+
+	break; // End case "circle":
+	// End Circle Tool
+
+	// Ellipse Tool
+	case "ellipse":
+
+	circleOriginLeft = eOffsetX;
+	circleOriginTop = eOffsetY;
+	newCircle = s0.ellipse(eOffsetX, eOffsetY, 0, 0).attr({
+		fill:"#ffffff",
+		stroke:"#000000",
+		strokeWidth: 1
+	});
+	// temporary guidelines
+	// horizontal box line
+	horizontalLine = s0.line(circleOriginLeft, circleOriginTop, circleOriginLeft, circleOriginTop).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); ;
+	// vertical box line
+	verticalLine = s0.line(circleOriginLeft, circleOriginTop, circleOriginLeft, circleOriginTop).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); ;
+	// horizontal guideline
+	s0.line(0, circleOriginTop, jSvg.width(), circleOriginTop).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	}); 
+	// vertical guideline
+	s0.line(circleOriginLeft, 0, circleOriginLeft, jSvg.height()).attr({
+		stroke:"#000",
+		strokeWidth: 1,
+		class:"guideline"
+	});
+
+	break; // case "ellipse":
+	// End Ellipse Tool
+
+	} // End switch(activeTool)
+	// End Tools
+
+});
+jBody.on("mouseup",function(e){
+	var eOffsetX = e.offsetX;
+	var eOffsetY = e.offsetY;
+	j("#mouseupSvgLeft").html(eOffsetX);
+	j("#mouseupSvgTop").html(eOffsetY);
+	j("#mouseupViewPortX").html(eOffsetX);
+	j("#mouseupViewPortY").html(jSvg.height() - eOffsetY);
+
+	// All Tools
+	activeTool = "none";
+	j(".guideline").remove()
+	// End All Tools
+});
+// End Mouse Input
+
+// Keyboard Input
+jBody.on("keydown",function(e){
+	switch (e.keyCode){
+		case 16:	
+			shiftKeyDown = true;
+		break;
+	}
+});
+
+
+// main program
+var s0 = Snap("#svg");
+
+// Tool Functions
+
+
+// End Tool Functions
+
+}// main
+
+</script>
+
+</head>
+<body onload="main();">
+
+<svg id="svg">
+</svg>
+
+<div id="analyticsPane">
+	<div id="toggleAnalytics">+</div>
+	<div id="analytics">
+		<div class="bold">Cursor Coordinates</div>
+		<div>
+			svg: left: <span id="svgLeft">-</span> px; top: <span id="svgTop">-</span> px;
+		</div>
+		<div>
+			view port: x: <span id="viewPortX">-</span> px; y: <span id="viewPortY">-</span> px;
+		</div>
+		<div class="bold">MouseDown Coordinates</div>
+		<div>
+			svg: left: <span id="mousedownSvgLeft">-</span> px; top: <span id="mousedownSvgTop">-</span> px;
+		</div>
+		<div>
+			view port: x: <span id="mousedownViewPortX">-</span> px; y: <span id="mousedownViewPortY">-</span> px;
+		</div>
+		<div class="bold">MouseUp Coordinates</div>
+		<div>
+			svg: left: <span id="mouseupSvgLeft">-</span> px; top: <span id="mouseupSvgTop">-</span> px;
+		</div>
+		<div>
+			view port: x: <span id="mouseupViewPortX">-</span> px; y: <span id="mouseupViewPortY">-</span> px;
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

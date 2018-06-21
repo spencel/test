@@ -1,0 +1,1 @@
+var data = "This Scope of Services defines the extent of the Black & Veatch's (CONSULTANT's) services necessary to complete the required work and documents specified herein for the PROGRAMMATIC WATER TRANSMISSION PIPELINES CONDITION ASSESSMENT, herein referred to as the PROJECT.";

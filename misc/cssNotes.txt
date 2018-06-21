@@ -1,0 +1,15 @@
+.consoleContainer {
+	display: inline-block; 
+	position: fixed;
+	height: ;
+	width: ;
+	margin: ; /* special elements: <text-area>; */
+	padding: ; /* special elements: <text-area>; */
+	background-color: pink;
+	border: 1px solid #1a1a1a; /* special elements: <text-area>; */
+
+
+}
+textarea {
+	resize: ;
+}

@@ -1,0 +1,20 @@
+Fill screen with an element:
+
+body{
+margin:0 auto;
+}
+div{
+position:absolute;
+height:100%;
+width:100%;
+}
+
+
+Download my svg I just made:
+
+  $('body').append(
+    $('<a>')
+      .attr('href-lang', 'image/svg+xml')
+      .attr('href', 'data:image/svg+xml;utf8,' +  unescape($('svg')[0].outerHTML))
+      .text('Download')
+  );

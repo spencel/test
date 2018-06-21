@@ -1,0 +1,148 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<script src="lib/jquery-3.0.0.min.js"></script>
+		<script src="lib/three.min.js"></script>
+<script>
+function main() {
+	debugModeOn = true;
+
+	var mousedown = false;
+	var initMousedown = true;
+
+	var raycaster = new THREE.Raycaster();
+	var mouse = new THREE.Vector2();
+
+	var scene = new THREE.Scene();
+	var camera = new THREE.OrthographicCamera( 
+		window.innerWidth / -200, 
+		window.innerWidth / 200, 
+		window.innerHeight / 200, 
+		window.innerHeight / -200, 
+		0.1, 
+		1000 );
+
+	var renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+	var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+	var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+	var cube = new THREE.Mesh( geometry, material );
+	scene.add( cube );
+
+	camera.position.z = 2;
+	strHtml = 
+		"<div class='debugBox'> \
+			<div id='tNow'></div> \
+			<div id='tDelta'></div> \
+			<div id='fps'></div> \
+			<div id='mousemoveX'></div> \
+			<div id='mousemoveY'></div> \
+			<div id='mousedownX'></div> \
+			<div id='mousedownY'></div> \
+			<div id='mouseupX'></div> \
+			<div id='mouseupY'></div> \
+		</div>"
+	jQuery( "body" ).append( strHtml );
+
+	var cameraX = 0;
+	var cameraY = 1;
+	var cameraZ = 0;
+	var tAccu = 0;
+	var render = function () {
+		var tNow = performance.now();
+		requestAnimationFrame( render );
+
+		inputHandler();
+
+		//cube.rotation.x += 0.01;
+		//cube.rotation.y += 0.01;
+
+		//cameraY += -0.01;
+		//cameraX += -0.01;
+		//cameraZ += -0.01;
+		//camera.up = new THREE.Vector3( 0, cameraY, 0 );
+		//camera.lookAt( new THREE.Vector3( cameraX, cameraY, cameraZ));
+		camera.position.x += 0.01;
+
+		renderer.render(scene, camera);
+
+		var tDelta = performance.now() - tNow;
+		var fps = 1 / tDelta * 1000;
+		if ( performance.now() - tAccu > 500 ) {
+			jQuery( "#tNow" ).html("tNow: " + (Math.round(tNow) / 1000) + " s");
+			jQuery( "#tDelta" ).html("tDelta: " + tDelta + " ms");
+			jQuery( "#fps" ).html("FPS: " + Math.round(fps));
+			tAccu = performance.now();
+		}
+	};
+
+	render();
+
+	function inputHandler() {
+		if (debugModeOn == true) {
+			jQuery( "#mousemoveX" ).html("mousemoveX: " + mouse.x);
+			jQuery( "#mousemoveY" ).html("mousemoveY: " + mouse.y);
+		}
+		if ( mousedown == true ) {
+			if ( initMousedown == true ) {
+				initMousedown = false
+				if (debugModeOn == true) {
+					jQuery( "#mousedownX" ).html("mousedownX: " + mouse.x);
+					jQuery( "#mousedownY" ).html("mousedownY: " + mouse.y);
+				}
+				// update the picking ray with the camera and mouse position
+				raycaster.setFromCamera( mouse, camera );
+
+				// calculate objects intersecting the picking ray
+				var intersects = raycaster.intersectObjects( scene.children );
+
+				for ( var i = 0; i < intersects.length; i++ ) {
+					intersects[ i ].object.material.color.set( 0xBFAF00 );
+				}
+
+
+			} else {
+			}
+		} else if ( initMousedown == false) {
+			initMousedown = true;
+			if (debugModeOn == true) {
+				jQuery( "#mouseupX" ).html("mouseupX: " + mouse.x);
+				jQuery( "#mouseupY" ).html("mouseupY: " + mouse.y);
+			}
+			// update the picking ray with the camera and mouse position
+			raycaster.setFromCamera( mouse, camera );
+
+			// calculate objects intersecting the picking ray
+			var intersects = raycaster.intersectObjects( scene.children );
+
+			for ( var i = 0; i < intersects.length; i++ ) {
+				intersects[ i ].object.material.color.set( 0x00ff00 );
+			}
+		}
+	}
+	function onMouseMove( event ) {
+		mouse.x = event.clientX / window.innerWidth * 2 - 1;
+		mouse.y = -event.clientY / window.innerHeight * 2 + 1;
+	}
+	window.addEventListener( "mousemove", onMouseMove, false )
+	function onMouseDown( event ) {
+		mouse.x = event.clientX / window.innerWidth * 2 - 1;
+		mouse.y = -event.clientY / window.innerHeight * 2 + 1;
+		mousedown = true;
+	}
+	window.addEventListener( "mousedown", onMouseDown, false );
+	function onMouseUp( event ) {
+		mouse.x = event.clientX / window.innerWidth * 2 - 1;
+		mouse.y = -event.clientY / window.innerHeight * 2 + 1;
+		mousedown = false;
+	}
+	window.addEventListener( "mouseup", onMouseUp, false );
+}
+</script>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body onload='main();'>
+	</body>
+</html>

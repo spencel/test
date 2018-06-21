@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="modConsole.js"></script>
+<style>
+body {
+	background-color:hsl(26, 100%, 99%); /*hsl(26, 100%, 95%)*/
+}
+#consoleContainer {
+	display: inline-block; position: fixed;
+	height: ; width: ;
+	margin: ; padding: ;
+	background-color: ;
+	border: 1px solid hsl(0, 0%, 75%); /* special elements: <text-area>; */
+}
+#consoleWrapper {
+	display: ; position: ;
+	height: ; width: ;
+	margin: ; padding: ;
+	background-color:;
+	border: ; /* special elements: <text-area>; */
+}
+#consoleTopBar{
+	display:block;
+	/*position:;*/
+		/*left:;*/
+		/*right:;*/
+		/*top:;*/
+		/*bottom:;*/
+		/*float:;*/
+	/*height:;*/
+	/*width:;*/
+	/*margin:;*/
+	/*padding:;*/
+	text-align:right;
+	background-color:hsl(26, 100%, 98%);
+	/*border:;*/ /* special elements: <text-area>; */
+}
+#moveConsole {
+	display:inline-block;
+	/*position:;*/
+		/*left:;*/
+		/*right:;*/
+		/*top:;*/
+		/*bottom:;*/
+		/*float:;*/
+	/*height:;*/
+	/*width:;*/
+	/*margin:;*/
+	/*padding:;*/
+	/*text-align:;*/
+	/*background-color:;*/
+	/*border:;*/ /* special elements: <text-area>; */
+	color:hsl(0, 0%, 25%);
+	cursor:move;
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+}
+#consoleOutput {
+	display: block; position: ;
+	height: auto;
+	max-height: 100px;
+	width: 300px;
+	vertical-align: top;
+	margin: 0px; padding: 0px;
+	background-color: #FFFFFF;
+	border: none; /* special elements: <text-area>; */
+	overflow-y: auto;
+	overflow-wrap: break-word;
+	color:hsl(0, 0%, 25%);
+
+	resize: none;
+}
+#consoleInput {
+	display: block;
+	/*position: ;*/
+		height: ;
+		width: 300px;
+	vertical-align: top;
+	margin: 0px; padding: 0px;
+	background-color: #FFFFFF;
+	border: none; /* special elements: <text-area>; */
+	color:hsl(0, 0%, 25%);
+
+	resize: vertical;
+}
+#consoleInput:focus {
+	outline: none;
+}
+#debug {
+	display: inline-block;
+	position: fixed; left: ; right: 0px; top: ; bottom: ;
+	height: ; width: ;
+	margin: ; padding: ;
+	text-align: right;
+	background-color: #FFFFFF;
+	border: ; /* special elements: <text-area>; */
+}
+#loading {
+	display: inline-block;
+	position: ; 
+		left: ; 
+		right: 0px; 
+		top: ; 
+		bottom: ;
+	height: 10px; width: 30px;
+	/*margin: ; padding: ;*/
+	text-align: right;
+	background-color: #000000;
+	border: ; /* special elements: <text-area>; */
+}
+
+</style>
+</head>
+<body>
+
+<div id="consoleContainer">
+	<div id="consoleWrapper">
+		<div id="consoleTopBar">
+			<div id="moveConsole">m</div>
+		</div>
+		<div id="consoleOutput"></div>
+		<textarea id="consoleInput" rows="1"></textarea>
+	</div>
+</div>
+
+<div id="debug">
+	<div id="elapsedTime"></div>
+	<div id="fps"></div>
+	<div id="iterations">N/A | iterations</div>
+	<div id="loading"></div>
+	<div id="mousemove">NA | mousemove</div>
+	<div id="mousedown">NA | mousedown</div>
+	<div id="mouseup">NA | mouseup</div>
+</div>
+
+</body>
+</html>

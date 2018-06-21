@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>slsvg</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="snap.svg-min-0.4.1.js"></script>
+<style>
+body{
+margin:0 auto;
+}
+#svg{
+position:absolute;
+height:100%;
+width:100%;
+}
+#cursLoc{
+display:inline-block;
+position:fixed;
+right:0px;
+}
+</style>
+<script>
+;function slsvgprogram() {
+
+var s = Snap("#svg");
+
+// Main
+newVerticalCurve();
+
+function newVerticalCurve() {
+	var inverted = jQuery("#svg").height();
+	var guideline = {fill:"none",stroke:"#000000",strokeWidth:0.5};
+	var designLine = {fill:"none",stroke:"#ff0000",strokeWidth:0.5};
+
+	var A0 = {
+		x: 100,
+		y: 400
+	};
+	var A1 = {
+		x: 100,
+		y: 150
+	};
+	var A2 = {
+		x: 100,
+		y: 150
+	};
+	var A3 = {
+		x: 100,
+		y: 400
+	};
+	var B0 = {
+		x: 400,
+		y: 100
+	};
+	var B1 = {
+		x: 150,
+		y: 100
+	};
+	var B2 = {
+		x: 150,
+		y: 100
+	};
+	var B3 = {
+		x: 400,
+		y: 100
+	};
+	var C = {
+		x: 150,
+		y: 150,
+		r: 50
+	};
+	var pathString =
+		"M " + A2.x + " " + (inverted - A2.y) +
+		" A " + C.r + " " + C.r + " " + 0 + " " + 0 +  " " + 0 + " " + B1.x + " " + (inverted - B1.y);
+
+	s.circle(C.x, inverted - C.y, C.r).attr(guideline);
+	s.line(A0.x, inverted - A0.y, A1.x, inverted - A1.y).attr(designLine);
+	s.path(pathString).attr(designLine);
+	s.line(B0.x, inverted - B0.y, B1.x, inverted - B1.y).attr(designLine);
+
+}
+
+function newVerticalCurveOld() {
+	var r = 100;
+	var bL = 25;
+	var bS = 0.05;
+	var aX = 0;
+	var aY = 642;
+	s.circle(aX + 100, jQuery("#svg").height()*2.5 - aY, 2).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	var bX = 200;
+	var bY = 602;
+	s.circle(bX + 100, jQuery("#svg").height()*2.5 - bY, 2).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	var dX = bX - bL;
+	var dY = bY + bL*bS;
+	s.circle(dX + 100, jQuery("#svg").height()*2.5 - dY, 2).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	var nB = dY - bY;
+	var mB = bX - dX;
+	var thetaB = Math.atan(r/bL);
+	console.log("thetaB: " + thetaB*180/Math.PI);
+	var sigmaB = Math.atan(nB/mB);
+	console.log("sigmaB: " + sigmaB*180/Math.PI);
+	var deltaB = Math.PI/2 - thetaB - sigmaB;
+	console.log("deltaB: " + deltaB*180/Math.PI);
+	console.log("thetaB+sigmaB+deltaB: " + ((thetaB+sigmaB+deltaB)*180/Math.PI))
+	var hB = r/Math.sin(thetaB);
+	console.log("hB: " + hB);
+	var kB = Math.sin(deltaB)*hB;
+	console.log("kB: " + kB);
+	var pB = Math.cos(deltaB)*hB;
+	console.log("pB: " + pB);
+	var cX = bX - kB;
+	var cY = bY + pB;
+	var kA = cX - aX;
+	console.log("kA: " + kA);
+	var pA = aY - cY;
+	console.log("pA: " + pA);
+	var deltaA = Math.atan(pA/kA);
+	console.log("deltaA: " + deltaA*180/Math.PI);
+	var hA = pA/Math.sin(deltaA)
+	console.log("hA: " + hA);
+	var thetaA = Math.atan(r/hA);
+	console.log("thetaA: " + thetaA*180/Math.PI);
+	var aL = Math.cos(thetaA)*hA;
+	var sigmaA = Math.PI/2 - thetaA - deltaA;
+	console.log("sigmaA: " + sigmaA*180/Math.PI);
+	console.log("thetaA+sigmaA+deltaA: " + ((thetaA+sigmaA+deltaA)*180/Math.PI))
+	var nA = Math.cos(sigmaA)*aL;
+	var mA = Math.sin(sigmaA)*aL;
+	var sA = nA/mA;
+	console.log("slope: " + sA);
+	
+
+	// bL
+	s.line(bX + 100, jQuery("#svg").height()*2.5 - bY, dX + 100, jQuery("#svg").height()*2.5 - dY).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// mB
+	s.line(bX + 100, jQuery("#svg").height()*2.5 - bY, bX - mB + 100, jQuery("#svg").height()*2.5 - bY).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// nB
+	s.line(dX + 100, jQuery("#svg").height()*2.5 - dY, dX + 100, jQuery("#svg").height()*2.5 - dY + nB).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// pB
+	s.line(bX + 100, jQuery("#svg").height()*2.5 - bY, bX + 100, jQuery("#svg").height()*2.5 - bY - pB).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// kB
+	s.line(bX + 100, jQuery("#svg").height()*2.5 - bY - pB, bX - kB + 100, jQuery("#svg").height()*2.5 - bY - pB).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// C circle
+	s.circle(cX + 100, jQuery("#svg").height()*2.5 - cY, r).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// pA
+	s.line(cX + 100, jQuery("#svg").height()*2.5 - cY, cX + 100, jQuery("#svg").height()*2.5 - cY - pA).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// kA
+	s.line(cX + 100, jQuery("#svg").height()*2.5 - cY - pA, aX + 100, jQuery("#svg").height()*2.5 - cY - pA).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// hA
+	s.line(aX + 100, jQuery("#svg").height()*2.5 - (aY), aX + Math.cos(deltaA)*hA + 100, jQuery("#svg").height()*2.5 - (aY - Math.sin(deltaA)*hA)).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// nA
+	s.line(aX + 100, jQuery("#svg").height()*2.5 - aY, aX + 100, jQuery("#svg").height()*2.5 - (aY - nA)).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// mA
+	s.line(aX + 100, jQuery("#svg").height()*2.5 - (aY - nA), aX + mA + 100, jQuery("#svg").height()*2.5 - (aY - nA)).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+	// aL
+	s.line(aX + 100, jQuery("#svg").height()*2.5 - aY, aX + mA + 100, jQuery("#svg").height()*2.5 - (aY - nA)).attr({fill:"none",stroke:"#000000",strokeWidth:0.5});
+}
+
+
+}
+</script>
+
+</head>
+<body onload="slsvgprogram();">
+<div id="cursLoc">top: <span id="cursTop"></span> px; left: <span id="cursLeft"></span> px;
+</div>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" >
+
+</svg>
+
+</body>
+</html>

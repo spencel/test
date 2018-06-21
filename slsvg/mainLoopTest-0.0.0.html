@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>slsvg</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="snap.svg-min-0.4.1.js"></script>
+<style>
+body{
+margin:0 auto;
+}
+#svg{
+position:absolute;
+height:100%;
+width:100%;
+}
+#analytics{
+display:inline-block;
+position:fixed;
+}
+</style>
+<script>
+;function runApp() {
+
+var slsvg = {
+	cursor: {
+		left: null,
+		top: null,
+		lastClickLeft: null,
+		lastClickTop: null,
+		lastMouseDownLeft: null,
+		lastMouseDownTop: null,
+		lastMouseUpLeft: null,
+		lastMouseUpTop: null
+	},
+	hotkeyBindings: [],
+	tools: {
+		rectangle: {
+			draw: function() {
+				console.log("rectangle")
+			}
+		},
+		circle: {
+			draw: function() {
+				console.log("circle")
+			}
+		},
+		regularConvexPolygon: {
+			draw: function() {
+				console.log("regularConvexPolygon")
+			}
+		}
+	},
+	lastTick: window.performance.now(),
+	stoppedMainLoop: null,
+	render: function() {},
+	stopMainLoop: function() {
+		window.cancelAnimationFrame( slsvg.stoppedMainLoop );	
+	}
+};
+
+/* Set Default Hotkeys */
+slsvg.hotkeyBindings[49] = slsvg.tools.rectangle;
+slsvg.hotkeyBindings[50] = slsvg.tools.circle;
+slsvg.hotkeyBindings[51] = slsvg.tools.regularConvexPolygon;
+/* End Set Default Hotkeys */
+
+jQuery("body").on("click", function(e){
+	slsvg.cursor.lastClickLeft = e.offsetX;
+	slsvg.cursor.lastClickTop = e.offsetY;
+	jQuery("#lastClickLeft").html( e.offsetX );
+	jQuery("#lastClickTop").html( e.offsetY );
+});
+
+jQuery("body").on("mousedown",function(e){
+	slsvg.cursor.lastMouseDownLeft = e.offsetX;
+	slsvg.cursor.lastMouseDownTop = e.offsetY;
+	jQuery("#lastMouseDownLeft").html( e.offsetX );
+	jQuery("#lastMouseDownTop").html( e.offsetY );
+});
+
+jQuery("body").on("mouseup",function(e){
+	slsvg.cursor.lastMouseUpLeft = e.offsetX;
+	slsvg.cursor.lastMouseUpTop = e.offsetY;
+	jQuery("#lastMouseUpLeft").html( e.offsetX );
+	jQuery("#lastMouseUpTop").html( e.offsetY );
+});
+
+jQuery("body").on("mousemove", function(e){
+	slsvg.cursor.left = e.offsetX;
+	slsvg.cursor.top = e.offsetY;
+	jQuery("#cursLeft").html( e.offsetX );
+	jQuery("#cursTop").html( e.offsetY );
+	slsvg.render();
+});
+
+jQuery("body").on("keydown",function(e){
+	var keyCode = e.keyCode;
+	slsvg.hotkeyBindings[keyCode].draw();
+	console.log(e);
+});
+
+
+;(function() {
+	function mainLoop() {
+		slsvg.stoppedMainLoop = window.requestAnimationFrame( mainLoop );
+
+		jQuery("#fps").html( Math.floor( 1000/(window.performance.now() - slsvg.lastTick) ) );
+
+		slsvg.lastTick = window.performance.now();
+	}
+	mainLoop();
+})(); // ;function () {}
+
+} // runApp
+</script>
+
+</head>
+<body onload="runApp();">
+<div id="analytics">
+	<div>fps: <span id="fps"></span></div>
+	<div>left: <span id="cursLeft"></span> px, top: <span id="cursTop"></span> px</div>
+	<div>last click left: <span id="lastClickLeft"></span> px, last click top: <span id="lastClickTop"></span> px</div>
+	<div>last mouse down left: <span id="lastMouseDownLeft"></span> px, last mouse down top: <span id="lastMouseDownTop"></span> px</div>
+	<div>last mouse up left: <span id="lastMouseUpLeft"></span> px, last up top: <span id="lastMouseUpTop"></span> px</div>
+</div>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" >
+
+</svg>
+
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>slsvg</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="snap.svg-min.js"></script>
+<style>
+body{
+margin:0 auto;
+}
+#svg{
+position:absolute;
+height:100%;
+width:100%;
+}
+#cursLoc{
+display:inline-block;
+position:fixed;
+right:0px;
+}
+</style>
+<script>
+function main(){
+
+var j = jQuery;
+
+var slsvg = {
+	cursorLeftOrigin: 300,
+	cursorTopOrigin: 200,
+	cursorLeftLast: 0,
+	cursorTopLast: 0
+}
+var keys = {
+	altDown: false,
+	ctrlDown: false,
+	shiftDown: false,
+	_1: false,
+	_2: false,
+	_3: false
+}
+
+/* Event Handling */
+// Mouse
+j("body").on("click",function(e){
+	console.log(e);
+});
+
+//j("body").on("")
+
+j("body").on("mousemove",function(e){
+	slsvg.cursorLeftLast = e.offsetX;
+	slsvg.cursorTopLast = e.offsetY;
+	j("#cursLeft").html(e.offsetX);
+	j("#cursTop").html(e.offsetY);
+	render();
+});
+
+// Keyboard
+j("body").on("keydown",function(e){
+	var keyCode = e.keyCode;
+	//console.log(e);
+	switch (keyCode){
+		// Alt
+		case 18:
+			keys.altDown = true;
+			render();
+		break;
+		// Ctrl
+		case 17:
+			keys.ctrlDown = true;
+			render();
+		break;
+		// Shift
+		case 16:
+			keys.shiftDown = true;
+			render();
+		break;
+	}
+});
+
+j("body").on("keyup",function(e){
+	var keyCode = e.keyCode;
+	switch (keyCode){
+		// Alt
+		case 18:
+			keys.altDown = false;
+			render();
+		break;
+		// Ctrl
+		case 17:
+			keys.ctrlDown = false;
+			render();
+		// Shift
+		case 16:
+			keys.shiftDown = false;
+			render();
+		break;
+	}
+});
+
+
+/* SVG */
+var s = Snap("#svg");
+var newRect = s.rect(slsvg.cursorLeftOrigin, slsvg.cursorTopOrigin, 0, 0).attr({
+	fill:"none",
+	stroke:"#000000",
+	strokeWidth:1
+});
+var newPoly = s.polyline([slsvg.cursorLeftOrigin, slsvg.cursorTopOrigin]).attr({
+	fill:"none",
+	stroke:"#000000",
+	strokeWidth:1
+});
+
+
+
+var vertLine = s.line(300, 0, 300, j("#svg").height()).attr({
+	stroke:"#000000",
+	strokeWidth:1
+});
+var horiLine = s.line(0, 200, j("#svg").width(), 200).attr({
+	stroke:"#000000",
+	strokeWidth:1
+});
+
+var boxLine = s.rect(0, 0, 0, 0).attr({
+	fill:"none",
+	stroke:"#000000",
+	strokeWidth:1
+});
+
+var circleLine = s.ellipse(0,0,0,0).attr({
+	fill:"none",
+	stroke:"#000000",
+	strokeWidth:1
+});
+
+function render(){
+	//rectangle(slsvg.cursorLeftLast, slsvg.cursorTopLast);
+	regularConvexPolygon();
+}
+
+function regularConvexPolygon(){
+	var width = slsvg.cursorLeftLast - slsvg.cursorLeftOrigin;
+	var height = slsvg.cursorTopLast - slsvg.cursorTopOrigin;
+	// Centroid
+	if (keys.ctrlDown == true){
+		// Regular Convex Polygon
+		if (keys.shiftDown == false){
+			if (width < 0){
+				width = -1*width;
+				if (height < 0){
+					height = -1*height;
+				}
+			} else {
+				if (height < 0){
+					height = -1*height;
+				}
+			}
+			if (width > height ){
+				d = width;
+			} else {
+				d = height;
+			}
+		// Nonregular Convex Polygon
+		} else {
+			
+		}
+		r = d;
+		ox = slsvg.cursorLeftOrigin;
+		oy = slsvg.cursorTopOrigin;
+	// Corner
+	} else {
+		// Regular Convex Polygon
+		if (keys.shiftDown == false){
+			if (width < 0){
+				width = -1*width;
+				// top left quadrant
+				if (height < 0){
+					height = -1*height;
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin - r;
+					oy = slsvg.cursorTopOrigin - r;
+				// bottom left quadrant
+				} else {
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin - r;
+					oy = slsvg.cursorTopOrigin + r;
+				}
+			} else {
+				// top right quadrant
+				if (height < 0){
+					height = -1*height;
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin + r;
+					oy = slsvg.cursorTopOrigin - r;
+				// bottom right quadrant
+				} else {
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin + r;
+					oy = slsvg.cursorTopOrigin + r;
+				}
+			}
+		// Nonregular Convex Polygon
+		} else {
+			if (width < 0){
+				width = -1*width;
+				// top left quadrant
+				if (height < 0){
+					height = -1*height;
+					// height constrained
+					if (width > height ){
+						var d = width;
+						var deform = height/width;
+						var r = d/2;
+						var ox = slsvg.cursorLeftOrigin - width/2;
+						var oy = slsvg.cursorTopOrigin - height/2;
+						var sides = 7;
+						var theta = Math.PI - (sides - 2)*Math.PI/sides
+						var thetaCumulative = theta/2;
+						var nx = r*Math.sin(theta/2);
+						var ny = r*Math.cos(theta/2);
+						var myArray = [ox + nx, oy + deform*ny];
+						for (var i = 0; i < sides; i++){
+							thetaCumulative = thetaCumulative + theta;
+							var m = 2*i;
+							nx = r*Math.sin(thetaCumulative);
+							ny = r*Math.cos(thetaCumulative);
+							myArray[m + 2] = ox + nx;
+							myArray[m + 3] = oy + deform*ny;
+						}
+					// width constrained
+					} else {
+						var d = height;
+						var deform = width/height;
+						var r = d/2;
+						var ox = slsvg.cursorLeftOrigin - width/2;
+						var oy = slsvg.cursorTopOrigin - height/2;
+						var sides = 7;
+						var theta = Math.PI - (sides - 2)*Math.PI/sides
+						var thetaCumulative = theta/2;
+						var nx = r*Math.sin(theta/2);
+						var ny = r*Math.cos(theta/2);
+						var myArray = [ox + deform*nx, oy + ny];
+						for (var i = 0; i < sides; i++){
+							thetaCumulative = thetaCumulative + theta;
+							var m = 2*i;
+							nx = r*Math.sin(thetaCumulative);
+							ny = r*Math.cos(thetaCumulative);
+							myArray[m + 2] = ox + deform*nx;
+							myArray[m + 3] = oy + ny;
+						}
+						
+					}
+				// bottom left quadrant
+				} else {
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin - r;
+					oy = slsvg.cursorTopOrigin + r;
+				}
+			} else {
+				// top right quadrant
+				if (height < 0){
+					height = -1*height;
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin + r;
+					oy = slsvg.cursorTopOrigin - r;
+				// bottom right quadrant
+				} else {
+					if (width > height ){
+						d = width;
+					} else {
+						d = height;
+					}
+					r = d/2
+					ox = slsvg.cursorLeftOrigin + r;
+					oy = slsvg.cursorTopOrigin + r;
+				}
+			}
+		}
+	}
+	newPoly.attr({
+		points:myArray,
+		fill:"none",
+		stroke:"#000000",
+		strokeWidth:1
+	});
+	circleLine.attr({
+		cx:ox,
+		cy:oy,
+		rx:width/2,
+		ry:height/2
+	});
+	boxLine.attr({
+		x:ox - width/2,
+		y:oy - height/2,
+		width:width,
+		height:height
+	});
+	/*var sides = 7;
+	var theta = Math.PI - (sides - 2)*Math.PI/sides
+	var thetaCumulative = theta/2;
+	var nx = r*Math.sin(theta/2);
+	var ny = r*Math.cos(theta/2);
+	var myArray = [ox + nx, oy + ny];
+	for (var i = 0; i < sides; i++){
+		thetaCumulative = thetaCumulative + theta;
+		var m = 2*i;
+		var nx = r*Math.sin(thetaCumulative);
+		var ny = r*Math.cos(thetaCumulative);
+		myArray[m + 2] = ox + nx;
+		myArray[m + 3] = oy + ny;
+	}
+	newPoly.attr({
+		points:myArray,
+		fill:"none",
+		stroke:"#000000",
+		strokeWidth:1
+	});
+	circleLine.attr({
+		cx:ox,
+		cy:oy,
+		r:r
+	});
+	vertBoxLine.attr({
+		x1:ox + r,
+		y1:oy - r,
+		x2:ox + r,
+		y2:oy + r
+	});
+	horiBoxLine.attr({
+		x1:ox - r,
+		y1:oy + r,
+		x2:ox + r,
+		y2:oy + r
+	});
+	vertBoxLine2.attr({
+		x1:ox - r,
+		y1:oy - r,
+		x2:ox - r,
+		y2:oy + r
+	});
+	horiBoxLine2.attr({
+		x1:ox - r,
+		y1:oy - r,
+		x2:ox + r,
+		y2:oy - r
+	});*/
+}
+
+function rectangle(cursorLeft, cursorTop){
+	var width = cursorLeft - slsvg.cursorLeftOrigin;
+	var height = cursorTop - slsvg.cursorTopOrigin;
+
+	// Centroid
+	if (keys.ctrlDown == true){
+		// Square
+		if (keys.shiftDown == true){
+
+			if (width < 0){
+				width = -1*width;
+
+				// top left quadrant
+				if (height < 0){
+					height = -1*height;
+
+					if (width > height){
+						newRect.attr({
+							x: cursorLeft,
+							y: slsvg.cursorTopOrigin - width,
+							width: 2*width,
+							height: 2*width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - height,
+							y: cursorTop,
+							width: 2*height,
+							height: 2*height
+						});
+					}
+				// bottom left quadrant
+				} else {
+
+					if (width > height){
+						newRect.attr({
+							x: cursorLeft,
+							y: slsvg.cursorTopOrigin - width,
+							width: 2*width,
+							height: 2*width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - height,
+							y: slsvg.cursorTopOrigin - height,
+							width: 2*height,
+							height: 2*height
+						});
+					}
+				}
+			} else {
+				// top right quadrant
+				if (height < 0){
+					height = -1*height;
+
+					if (width > height){
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - width,
+							y: slsvg.cursorTopOrigin - width,
+							width: 2*width,
+							height: 2*width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - height,
+							y: cursorTop,
+							width: 2*height,
+							height: 2*height
+						});
+					}
+				// bottom right quadrant
+				} else {
+
+					if (width > height){
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - width,
+							y: slsvg.cursorTopOrigin - width,
+							width: 2*width,
+							height: 2*width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - height,
+							y: slsvg.cursorTopOrigin - height,
+							width: 2*height,
+							height: 2*height
+						});
+					}
+				}
+			}
+		// Rectangle
+		} else {
+		
+			if (width < 0){
+				width = -1*width;
+
+				// top left quadrant
+				if (height < 0){
+					height = -1*height;
+
+					newRect.attr({
+						x: cursorLeft,
+						y: cursorTop,
+						width: 2*width,
+						height: 2*height
+					});
+
+				// bottom left quadrant
+				} else {
+
+					newRect.attr({
+						x: cursorLeft,
+						y: slsvg.cursorTopOrigin - height,
+						width: 2*width,
+						height: 2*height
+					});
+				}
+			} else {
+
+				// top right quadrant
+				if (height < 0){
+					height = -1*height;
+
+					newRect.attr({
+						x: slsvg.cursorLeftOrigin - width,
+						y: cursorTop,
+						width: 2*width,
+						height: 2*height
+					});
+
+				// bottom right quadrant
+				} else {
+
+					newRect.attr({
+						x: slsvg.cursorLeftOrigin - width,
+						y: slsvg.cursorTopOrigin - height,
+						width: 2*width,
+						height: 2*height
+					});
+				}
+			}
+		}
+	// Corner
+	} else {
+		// Square
+		if (keys.shiftDown == true){
+
+			if (width < 0){
+				width = -1*width;
+
+				// top left quadrant
+				if (height < 0){
+					height = -1*height;
+
+					if (width > height){
+						newRect.attr({
+							x: cursorLeft,
+							y: slsvg.cursorTopOrigin - width,
+							width: width,
+							height: width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - height,
+							y: cursorTop,
+							width: height,
+							height: height
+						});
+					}
+				// bottom left quadrant
+				} else {
+
+					if (width > height){
+						newRect.attr({
+							x: cursorLeft,
+							y: slsvg.cursorTopOrigin,
+							width: width,
+							height: width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin - height,
+							y: slsvg.cursorTopOrigin,
+							width: height,
+							height: height
+						});
+					}
+				}
+			} else {
+				// top right quadrant
+				if (height < 0){
+					height = -1*height;
+
+					if (width > height){
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin,
+							y: slsvg.cursorTopOrigin - width,
+							width: width,
+							height: width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin,
+							y: cursorTop,
+							width: height,
+							height: height
+						});
+					}
+				// bottom right quadrant
+				} else {
+
+					if (width > height){
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin,
+							y: slsvg.cursorTopOrigin,
+							width: width,
+							height: width
+						});
+					} else {
+						newRect.attr({
+							x: slsvg.cursorLeftOrigin,
+							y: slsvg.cursorTopOrigin,
+							width: height,
+							height: height
+						});
+					}
+				}
+			}
+		// Rectangle
+		} else {
+		
+			if (width < 0){
+				width = -1*width;
+
+				// top left quadrant
+				if (height < 0){
+					height = -1*height;
+
+					newRect.attr({
+						x: cursorLeft,
+						y: cursorTop,
+						width: width,
+						height: height
+					});
+
+				// bottom left quadrant
+				} else {
+
+					newRect.attr({
+						x: cursorLeft,
+						y: slsvg.cursorTopOrigin,
+						width: width,
+						height: height
+					});
+				}
+			} else {
+
+				// top right quadrant
+				if (height < 0){
+					height = -1*height;
+
+					newRect.attr({
+						x: slsvg.cursorLeftOrigin,
+						y: cursorTop,
+						width: width,
+						height: height
+					});
+
+				// bottom right quadrant
+				} else {
+
+					newRect.attr({
+						x: slsvg.cursorLeftOrigin,
+						y: slsvg.cursorTopOrigin,
+						width: width,
+						height: height
+					});
+				}
+			}
+		}
+	}
+}
+
+} //main
+</script>
+
+</head>
+<body onload="main()">
+<div id="cursLoc">top: <span id="cursTop"></span> px; left: <span id="cursLeft"></span> px;
+</div>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" >
+
+</svg>
+
+</body>
+</html>

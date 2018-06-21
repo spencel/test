@@ -1,0 +1,10 @@
+fill body with an html element (svg, div, etc.)
+
+body{
+margin:0 auto;
+}
+#svg{
+position:absolute;
+width:100%;
+height:100%;
+}

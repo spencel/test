@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>svjproj</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="snap.svg-min.js"></script>
+<style>
+body{
+margin:0 auto;
+}
+#svg{
+position:absolute;
+height:100%;
+width:100%;
+}
+#cursLoc{
+display:inline-block;
+position:fixed;
+right:0px;
+}
+</style>
+<script>
+function main(){
+
+var jq = jQuery;
+
+/* Event Handling */
+// Mouse
+jq("body").on("click",function(e){
+	console.log(e);
+});
+jq("body").on("mousemove",function(e){
+	jq("#cursTop").html(e.offsetY);
+	jq("#cursLeft").html(e.offsetX);
+});
+
+// Keyboard
+
+
+/* SVG */
+var s = Snap("#svg");
+
+// data
+var riskFactorData = {
+	cofs:{
+		name:"Consequence of Failure",
+		factors:[
+			{
+				name:
+			}
+		]
+
+	}
+	lofs:{
+		name:"Likelihood of Failure"
+	}
+	"Cost of Failure":{
+		value:"35",
+
+	}
+}
+
+textBox(0,0,"Consequence of Failure","11pt");
+
+function textBox(left, top, text, fontSize){
+	// The origin of the text box shall be the top left corner of the border, however, the text must first be drawn so that it's height can be used to determine the size of the text box and position it.
+	var borderSize = 1; // px
+	var textVerticalCorrectionModulus = 0.815; // unitless
+	var textMarginModulus = 12.390625 ; // unitless (1 px / 12.390625 px)
+	var sText = s.text(left, top, [text]).attr({
+		fontFamily:"Arial",
+		fontSize:fontSize,
+		fontWeight:"Bold"
+	});
+	var bBox = sText.getBBox();
+	var textWidth = bBox.width;
+	var textHeight = bBox.height;
+	console.log(bBox);
+	sText.attr({y:(top + textHeight*textVerticalCorrectionModulus + borderSize + textHeight/12.390625) +"px"});
+	sText.attr({x:(left + borderSize + 2*textHeight/12.390625) +"px"});
+	// The 0.81 constant is an approximation of the text height minus the stuff that's under its baseline.
+	sText.before(s.rect(
+		left + borderSize/2,
+		top + borderSize/2,
+		textWidth + borderSize + 4*textHeight/12.390625,
+		textHeight + borderSize + 2*textHeight/12.390625).attr({
+			stroke:"green",
+			fill:"none"
+		})
+	);
+	s.circle(bBox.cx, bBox.cy, borderSize).attr({
+		fill:"red"
+	});
+}
+
+
+} //main
+</script>
+
+</head>
+<body onload="main()">
+<div id="cursLoc">top: <span id="cursTop"></span> px; left: <span id="cursLeft"></span> px;
+</div>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" >
+
+</svg>
+
+</body>
+</html>
